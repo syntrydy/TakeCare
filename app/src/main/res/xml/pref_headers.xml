@@ -1,0 +1,23 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- These settings headers are only used on tablets. -->
+    <header
+        android:fragment="com.it.mougang.gasmyr.assistme.preferences.SettingsActivity$GeneralPreferenceFragment"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/pref_header_general" />
+    <header
+        android:fragment="com.it.mougang.gasmyr.assistme.preferences.SettingsActivity$SmsPreferenceFragment"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="@string/pref_header_sms" />
+
+    <header
+        android:fragment="com.it.mougang.gasmyr.assistme.preferences.SettingsActivity$CallPreferenceFragment"
+        android:icon="@android:drawable/ic_menu_call"
+        android:title="@string/pref_header_call" />
+
+    <header
+        android:fragment="com.it.mougang.gasmyr.assistme.preferences.SettingsActivity$BirthdayPreferenceFragment"
+        android:icon="@android:drawable/ic_menu_today"
+        android:title="@string/pref_header_birthday" />
+
+</preference-headers>

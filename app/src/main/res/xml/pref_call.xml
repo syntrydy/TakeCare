@@ -1,0 +1,17 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:summary="@string/settings_call_enable_speaker"
+        android:key="assistMeEnableIncomingCallSpeaker"
+        android:title="@string/settings_call_enable_speaker_title" />
+    <EditTextPreference
+        android:capitalize="words"
+        android:dependency="assistMeEnableIncomingCallSpeaker"
+        android:defaultValue="@string/settings_call_summary_default_model"
+        android:inputType="textCapWords"
+        android:key="assistMeCallSummaryModelSpeaker"
+        android:maxLines="5"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:title="@string/settings_call_summary_model_title" />
+</PreferenceScreen>

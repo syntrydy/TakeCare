@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name">TakeCare</string>
+    <string name="action_settings">Settings</string>
+    <string name="app.tab.title.birtdays">Birthdays</string>
+    <string name="app.tab.title.alarms">Alarms</string>
+    <string name="app.tab.title.sayhello">Said hello</string>
+    <string name="app.tab.title.recordings">Recordings</string>
+    <string name="app.tab.title.todos">Todos</string>
+    <string name="app.menu.search">Search</string>
+    <string name="app.menu.about">About</string>
+
+    <string name="app.drawer.enable.birthday.notification">Birthday notification</string>
+    <string name="app.drawer.enable.sms.responder.notification">Enable sms responder</string>
+    <string name="app.drawer.enable.call.responder.notification">Enable call responder</string>
+    <string name="app.drawer.enable.toto.reminder">Activate todo reminder</string>
+    <string name="app.drawer.enable.sayhello.sms.sender">Enable say hello</string>
+    <string name="app.drawer.enable.speaker">Enable speaker</string>
+
+    <!-- General settings -->
+    <string name="pref_header_general">General</string>
+    <string name="settings_general_username_title">Your name</string>
+    <string name="settings_general_username_default">Sir Sir</string>
+    <string name="settings_general_userphone_title">Your phone</string>
+    <string name="settings_general_userphone_default">000000000</string>
+
+    <!-- SMS settings -->
+    <string name="pref_header_sms">SMS</string>
+    <string name="settings_sms_enable_speaker">Enable sms speaker</string>
+    <string name="settings_sms_enable_speaker_title">Speak when new sms</string>
+
+    <string name="settings_sms_summary">Speak just a summary</string>
+    <string name="settings_sms_summary_title">Speak the sms summary</string>
+
+    <string name="settings_sms_summary_default_model">{name} you have a new message from {sname}</string>
+    <string name="settings_sms_summary_model_title">Customize your summary</string>
+
+    <string name="settings_sms_body">Read entire sms</string>
+    <string name="settings_sms_body_title">Read sms body</string>
+
+    <string name="settings_sms_body_default_model">
+        {name} you have a new message from {sname} saying {message}</string>
+    <string name="settings_sms_body_model_title">Customize sms body</string>
+
+    <!-- Settings for Call -->
+    <string name="pref_header_call">CALL</string>
+
+    <string name="settings_call_enable_speaker">Enable call speaker</string>
+    <string name="settings_call_enable_speaker_title">Speak when new call</string>
+
+    <string name="settings_call_summary_default_model">{name} you have a new call from {sname}</string>
+    <string name="settings_call_summary_model_title">Customize your call summary</string>
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Settings for birthday -->
+    <string name="pref_header_birthday">BIRTHDAY</string>
+    <string name="app_menu_gallery">gallery</string>
+    <string name="app_menu_slidesho">slideshow</string>
+    <string name="app_menu_mange">manage</string>
+    <string name="app_menu_share">share</string>
+    <string name="app_menu_send">send</string>
+    <string name="app_first_start_message">" Welcome, I am here to be your new assistant."</string>
+</resources>

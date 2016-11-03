@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+    android:capitalize="words"
+    android:defaultValue="@string/settings_general_username_default"
+    android:inputType="textCapWords"
+    android:key="assistMe_UserDefinedName"
+    android:maxLines="1"
+    android:selectAllOnFocus="true"
+    android:singleLine="true"
+    android:title="@string/settings_general_username_title" />
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/settings_general_userphone_default"
+        android:inputType="phone"
+        android:key="assistMe_UserDefinedPhone"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/settings_general_userphone_title" />
+
+</PreferenceScreen>
