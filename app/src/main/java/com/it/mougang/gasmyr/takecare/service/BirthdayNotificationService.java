@@ -2,10 +2,13 @@ package com.it.mougang.gasmyr.takecare.service;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.widget.SpinnerAdapter;
 
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
+
+import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -19,11 +22,11 @@ public class BirthdayNotificationService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleIntent(@Nullable Intent intent) {
         if (intent != null) {
             realmResults = Realm.getDefaultInstance().where(Birthday.class).findAll();
             for (Birthday birthday : realmResults) {
-                int remaingdays = Math.abs(Utils.daysBetweenUsingJoda(birthday.getBirthdate(), birthday.getNextbirthdate()));
+                int remaingdays = Math.abs(Utils.daysBetweenUsingJoda(birthday.getBirthdate(),new Date()));
                 if(remaingdays<=5){
                     notifyForBirthdayWith(birthday);
                 }

@@ -3,6 +3,7 @@ package com.it.mougang.gasmyr.takecare.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 /**
@@ -15,7 +16,7 @@ public class CallService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleIntent(@Nullable Intent intent) {
         if (intent != null) {
             Log.d("CALL", "Inside service");
             Bundle bundle = intent.getExtras();

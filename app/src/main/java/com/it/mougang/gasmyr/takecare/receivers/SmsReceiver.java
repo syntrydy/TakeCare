@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
@@ -32,13 +34,16 @@ public class SmsReceiver extends BroadcastReceiver {
     String SMS_DISPLAYBODY = "";
     String SMS_PSEUDO_SUBJECT = "";
     String SMS_ServiceCenterAddress = "";
+    @Nullable
     private String messageBody = "";
+    @Nullable
     private String messageSummary = "";
+    @Nullable
     private String userName = "";
     private String fullMessage = "";
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         try {
             Bundle bundle = intent.getExtras();
             SmsMessage[] messages = null;
@@ -91,14 +96,14 @@ public class SmsReceiver extends BroadcastReceiver {
         }
     }
 
-    private void startSpeakerService(Context context, String message) {
+    private void startSpeakerService(@NonNull Context context, String message) {
         Intent speakerServiceIntent = new Intent(context, SpeechService.class);
         speakerServiceIntent.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_Message, message);
         speakerServiceIntent.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_TARGET, false);
         context.startService(speakerServiceIntent);
     }
 
-    private void init(Context context) {
+    private void init(@NonNull Context context) {
         sharedPreferences = context.getSharedPreferences(
                 GlobalConstants.TAKECARE_SHARE_PRFERENCE, Context.MODE_PRIVATE);
         globalPreferences = PreferenceManager.getDefaultSharedPreferences(context);

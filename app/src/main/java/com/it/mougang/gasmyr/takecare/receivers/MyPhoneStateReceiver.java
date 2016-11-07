@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -25,8 +27,11 @@ public class MyPhoneStateReceiver extends BroadcastReceiver {
     private static boolean phoneIsReceivingOutgoingCall = false;
     private static boolean incomingCallSpeakerIsEnable = false;
     private static boolean canUseSpeakerFeature = false;
+    @Nullable
     private String CALL_MAKER_NUMBER = null;
+    @Nullable
     private String messageBody = "";
+    @Nullable
     private String userName = "";
     private String fullMessage = "";
 
@@ -34,9 +39,9 @@ public class MyPhoneStateReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         try {
-            this.context = context;
+            MyPhoneStateReceiver.context = context;
             init();
             Log.i(TAG, " Logging1" + canUseSpeakerFeature + incomingCallSpeakerIsEnable);
             String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
@@ -80,7 +85,7 @@ public class MyPhoneStateReceiver extends BroadcastReceiver {
 
     }
 
-    private void startSpeakerService(Context context, String message) {
+    private void startSpeakerService(@NonNull Context context, String message) {
         synchronized (new Object()) {
             Intent smsService = new Intent(context, SpeechService.class);
             smsService.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_Message, message);
@@ -119,13 +124,16 @@ public class MyPhoneStateReceiver extends BroadcastReceiver {
         String SMS_DISPLAYBODY = "";
         String SMS_PSEUDO_SUBJECT = "";
         String SMS_ServiceCenterAddress = "";
+        @Nullable
         private String messageBody = "";
+        @Nullable
         private String messageSummary = "";
+        @Nullable
         private String userName = "";
         private String fullMessage = "";
 
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(@NonNull Context context, @NonNull Intent intent) {
             try {
                 Bundle bundle = intent.getExtras();
                 SmsMessage[] messages = null;
@@ -178,14 +186,14 @@ public class MyPhoneStateReceiver extends BroadcastReceiver {
             }
         }
 
-        private void startSpeakerService(Context context, String message) {
+        private void startSpeakerService(@NonNull Context context, String message) {
             Intent speakerServiceIntent = new Intent(context, SpeechService.class);
             speakerServiceIntent.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_Message, message);
             speakerServiceIntent.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_TARGET, false);
             context.startService(speakerServiceIntent);
         }
 
-        private void init(Context context) {
+        private void init(@NonNull Context context) {
             sharedPreferences = context.getSharedPreferences(
                     GlobalConstants.TAKECARE_SHARE_PRFERENCE, Context.MODE_PRIVATE);
             globalPreferences = PreferenceManager.getDefaultSharedPreferences(context);

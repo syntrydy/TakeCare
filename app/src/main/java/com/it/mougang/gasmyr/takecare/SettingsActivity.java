@@ -1,4 +1,5 @@
-package com.it.mougang.gasmyr.takecare.view.preferences;
+package com.it.mougang.gasmyr.takecare;
+
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -11,28 +12,26 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
-import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
-
-import com.it.mougang.gasmyr.takecare.R;
-import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
+import android.support.v4.app.NavUtils;
 
 import java.util.List;
 
-/**
- * Created by gamyr on 11/2/16.
- */
-
 public class SettingsActivity extends AppCompatPreferenceActivity {
-
+    @Nullable
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
+        public boolean onPreferenceChange(Preference preference, @NonNull Object value) {
             String stringValue = value.toString();
+
             if (preference instanceof ListPreference) {
                 ListPreference listPreference = (ListPreference) preference;
                 int index = listPreference.findIndexOfValue(stringValue);
@@ -40,13 +39,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         index >= 0
                                 ? listPreference.getEntries()[index]
                                 : null);
+
             } else if (preference instanceof RingtonePreference) {
                 if (TextUtils.isEmpty(stringValue)) {
-                    preference.setSummary("");
+                    preference.setSummary(R.string.pref_ringtone_silent);
 
                 } else {
                     Ringtone ringtone = RingtoneManager.getRingtone(
                             preference.getContext(), Uri.parse(stringValue));
+
                     if (ringtone == null) {
                         preference.setSummary(null);
                     } else {
@@ -62,12 +63,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     };
 
-    private static boolean isXLargeTablet(Context context) {
+    private static boolean isXLargeTablet(@NonNull Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
     }
 
-    private static void bindPreferenceSummaryToValue(Preference preference) {
+    private static void bindPreferenceSummaryToValue(@NonNull Preference preference) {
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
         sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
                 PreferenceManager
@@ -89,6 +90,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
     @Override
+    public boolean onMenuItemSelected(int featureId, @NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            if (!super.onMenuItemSelected(featureId, item)) {
+                NavUtils.navigateUpFromSameTask(this);
+            }
+            return true;
+        }
+        return super.onMenuItemSelected(featureId, item);
+    }
+
+    @Override
     public boolean onIsMultiPane() {
         return isXLargeTablet(this);
     }
@@ -102,9 +115,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || SmsPreferenceFragment.class.getName().equals(fragmentName)
-                || CallPreferenceFragment.class.getName().equals(fragmentName)
-                || BirthdayPreferenceFragment.class.getName().equals(fragmentName);
+                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
+                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -114,12 +126,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference(GlobalConstants.TAKECARE_USER_DEFINE_NAME));
-            bindPreferenceSummaryToValue(findPreference(GlobalConstants.ASSISTME_USER_DEFINE_PHONE));
+
+            bindPreferenceSummaryToValue(findPreference("example_text"));
+            bindPreferenceSummaryToValue(findPreference("example_list"));
         }
 
         @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
+        public boolean onOptionsItemSelected(@NonNull MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
@@ -130,40 +143,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class SmsPreferenceFragment extends PreferenceFragment {
+    public static class NotificationPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_sms);
-            setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference(GlobalConstants.TAKECARE_SMS_SUMMARY_MODEL_SPEAKER));
-            bindPreferenceSummaryToValue(findPreference(GlobalConstants.TAKECARE_SMS_BODY_MODEL_SPEAKER));
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class BirthdayPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_birthday);
+            addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
 
+            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
         }
 
         @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
+        public boolean onOptionsItemSelected(@NonNull MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
@@ -174,17 +165,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class CallPreferenceFragment extends PreferenceFragment {
+    public static class DataSyncPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_call);
+            addPreferencesFromResource(R.xml.pref_data_sync);
             setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference(GlobalConstants.TAKECARE_CALL_SUMMARY_MODEL_SPEAKER));
+            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
         }
 
         @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
+        public boolean onOptionsItemSelected(@NonNull MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));

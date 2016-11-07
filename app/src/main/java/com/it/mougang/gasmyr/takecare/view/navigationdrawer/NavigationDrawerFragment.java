@@ -2,6 +2,7 @@ package com.it.mougang.gasmyr.takecare.view.navigationdrawer;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,7 +32,7 @@ public class NavigationDrawerFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         setupRecyclerView(view);
@@ -39,7 +40,7 @@ public class NavigationDrawerFragment extends Fragment {
         return view;
     }
 
-    private void setupRecyclerView(View view) {
+    private void setupRecyclerView(@NonNull View view) {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.myDrawerList);
         NavigationDrawerAdapter adpater = new NavigationDrawerAdapter(getActivity(), NavigationDrawerItem.getData(getActivity().getApplicationContext()));
         recyclerView.setAdapter(adpater);

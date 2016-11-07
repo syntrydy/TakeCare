@@ -6,6 +6,7 @@ package com.it.mougang.gasmyr.takecare.view.navigationdrawer;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.it.mougang.gasmyr.takecare.R;
 
@@ -20,7 +21,8 @@ public class NavigationDrawerItem {
     public NavigationDrawerItem() {
     }
 
-    public static List<NavigationDrawerItem> getData(Context context) {
+    @NonNull
+    public static List<NavigationDrawerItem> getData(@NonNull Context context) {
         List<NavigationDrawerItem> items = new ArrayList<>();
         String[] titles = getTitles(context);
         int[] imagesIds = getImagesIds();
@@ -35,6 +37,7 @@ public class NavigationDrawerItem {
         return items;
     }
 
+    @NonNull
     private static int[] getImagesIds() {
         return new int[]{
                 R.drawable.ic_trending_up_white_24dp,
@@ -46,6 +49,7 @@ public class NavigationDrawerItem {
         };
     }
 
+    @NonNull
     private static int[] getIds() {
         return new int[]{
                 1,
@@ -57,7 +61,8 @@ public class NavigationDrawerItem {
         };
     }
 
-    private static String[] getTitles(Context context) {
+    @NonNull
+    private static String[] getTitles(@NonNull Context context) {
 
         return new String[]{
                 context.getResources().getString(R.string.app_drawer_enable_birthday_notification),

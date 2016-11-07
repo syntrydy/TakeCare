@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
 
 import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
 
@@ -27,7 +28,7 @@ public class SpeechService extends Service implements TextToSpeech.OnInitListene
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
         handler.removeCallbacksAndMessages(null);
         Bundle data = intent.getExtras();
         message = data.getString(GlobalConstants.TAKECARE_TEXTTOSPEECH_Message, message);

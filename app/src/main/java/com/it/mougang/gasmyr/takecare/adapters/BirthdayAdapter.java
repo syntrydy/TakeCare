@@ -1,6 +1,7 @@
 package com.it.mougang.gasmyr.takecare.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -42,15 +43,16 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
         this.realmResults.addChangeListener(this);
     }
 
+    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.birthday_list_row, parent, false);
         return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         final Birthday birthday = realmResults.get(position);
         holder.fullnameTv.setText(birthday.getFullName());
         Utils.roundedProfileImage(context, holder.photoImageV, R.drawable.profile02);
@@ -58,8 +60,10 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
         holder.birthdayTv.setText(format.format(birthday.getBirthdate()));
         if (birthday.getBirthdate().after(new Date())) {
             holder.remainingdaysTv.setText(String.valueOf(Utils.daysBetweenUsingJoda(new Date(), birthday.getBirthdate())));
-        } else if (birthday.getBirthdate().before(new Date())) {
-            holder.remainingdaysTv.setText(String.valueOf(Utils.daysBetweenUsingJoda(new Date(), birthday.getNextbirthdate())));
+        } else if (birthday.getBirthdate().getYear() == new Date().getYear()) {
+            holder.remainingdaysTv.setText(String.valueOf(Utils.daysBetweenUsingJoda(birthday.getBirthdate(), new Date())));
+        } else if (birthday.getBirthdate().getYear() != new Date().getYear()) {
+            holder.remainingdaysTv.setText(String.valueOf(Utils.daysBetweenUsingJoda(Utils.adjustDate(birthday.getBirthdate()), new Date())));
         } else {
             holder.remainingdaysTv.setText(String.valueOf(Utils.daysBetweenUsingJoda(birthday.getBirthdate(), new Date())));
         }
@@ -131,7 +135,7 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
         public CheckBox checkBox;
         public CardView cardView;
 
-        public MyViewHolder(View view) {
+        public MyViewHolder(@NonNull View view) {
             super(view);
             cardView = (CardView) view.findViewById(R.id.card_view);
             fullnameTv = (TextView) view.findViewById(R.id.fullName);

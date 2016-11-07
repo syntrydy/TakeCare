@@ -55,7 +55,7 @@ public class MyApplication extends Application {
 
 
     public void setInfos(HashMap<String, String> newInfos) {
-        this.infos = newInfos;
+        infos = newInfos;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.it.mougang.gasmyr.takecare.view.sayhello;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,13 +42,13 @@ public class SayHelloFragment extends Fragment{
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_say_hello, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         myRecyclerView = (RecyclerView) view.findViewById(R.id.sayhelloRecyclerView);
         myRecyclerView.setHasFixedSize(true);
@@ -63,7 +64,7 @@ public class SayHelloFragment extends Fragment{
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSayHelloRowChanged(SayHello sayHello) {
+    public void onSayHelloRowChanged(@NonNull SayHello sayHello) {
         switch (sayHello.getEventcode()){
             case 1:
                 Toast.makeText(getActivity().getApplicationContext(),"clicked "+sayHello.getFullName(),Toast.LENGTH_SHORT).show();

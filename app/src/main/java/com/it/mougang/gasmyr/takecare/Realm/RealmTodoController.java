@@ -2,6 +2,7 @@ package com.it.mougang.gasmyr.takecare.Realm;
 
 import android.app.Activity;
 import android.app.Application;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.it.mougang.gasmyr.takecare.MyApplication;
@@ -21,7 +22,7 @@ import io.realm.Sort;
 public class RealmTodoController {
 
     private static RealmTodoController instance;
-    private final Realm realm;
+    private Realm realm;
 
     public RealmTodoController(Application application) {
         realm = Realm.getInstance(MyApplication.getInstance().realmConfiguration);
@@ -34,14 +35,14 @@ public class RealmTodoController {
         setAutoRefresh();
     }
 
-    public static RealmTodoController with(Fragment fragment) {
+    public static RealmTodoController with(@NonNull Fragment fragment) {
         if (instance == null) {
             instance = new RealmTodoController(fragment.getActivity().getApplication());
         }
         return instance;
     }
 
-    public static RealmTodoController with(Activity activity) {
+    public static RealmTodoController with(@NonNull Activity activity) {
         if (instance == null) {
             instance = new RealmTodoController(activity.getApplication());
         }
@@ -67,7 +68,11 @@ public class RealmTodoController {
         realm.setAutoRefresh(true);
     }
 
+    @NonNull
     public RealmResults<Todo> getAllTodosAsync() {
+        if(realm.isClosed()){
+            realm = Realm.getInstance(MyApplication.getInstance().realmConfiguration);
+        }
         RealmResults<Todo> result = realm.where(Todo.class).findAllAsync();
         return result.sort("startdate", Sort.DESCENDING);
     }

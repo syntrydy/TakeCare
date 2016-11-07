@@ -1,6 +1,7 @@
 package com.it.mougang.gasmyr.takecare.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -39,7 +40,7 @@ public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyView
         public Button sayhelloButton, makebipmeButton;
         public CardView cardView;
 
-        public MyViewHolder(View view) {
+        public MyViewHolder(@NonNull View view) {
             super(view);
             cardView = (CardView) view.findViewById(R.id.card_view);
             fullnameTv = (TextView) view.findViewById(R.id.fullName);
@@ -51,15 +52,16 @@ public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyView
 
     }
 
+    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.sayhello_list_row, parent, false);
         return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         final SayHello sayHello = sayHellos.get(position);
         holder.fullnameTv.setText(sayHello.getFullName());
         Utils.roundedProfileImage(context, holder.photoImageV, R.drawable.profile00);
@@ -102,7 +104,7 @@ public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyView
         notifyDataSetChanged();
     }
 
-    public void addAll(List<SayHello> hellos) {
+    public void addAll(@NonNull List<SayHello> hellos) {
         sayHellos.addAll(hellos);
         notifyDataSetChanged();
     }

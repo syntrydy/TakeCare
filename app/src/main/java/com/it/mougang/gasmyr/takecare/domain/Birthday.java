@@ -20,8 +20,6 @@ public class Birthday extends RealmObject {
     private String phonenumber;
     @Required
     private Date birthdate;
-    @Required
-    private Date nextbirthdate;
     @Ignore
     private int eventcode;
     boolean isrealm;
@@ -30,12 +28,11 @@ public class Birthday extends RealmObject {
     public Birthday() {
     }
 
-    public Birthday(Long id, String fullName, String phonenumber, Date birthdate, Date nextbirthdate, boolean isrealm) {
+    public Birthday(Long id, String fullName, String phonenumber, Date birthdate, boolean isrealm) {
         this.id = id;
         this.fullName = fullName;
         this.phonenumber = phonenumber;
         this.birthdate = birthdate;
-        this.nextbirthdate = nextbirthdate;
         this.isrealm = isrealm;
     }
 
@@ -61,14 +58,6 @@ public class Birthday extends RealmObject {
 
     public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
-    }
-
-    public Date getNextbirthdate() {
-        return nextbirthdate;
-    }
-
-    public void setNextbirthdate(Date nextbirthdate) {
-        this.nextbirthdate = nextbirthdate;
     }
 
     public String getPhonenumber() {

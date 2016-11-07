@@ -14,7 +14,11 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Vibrator;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -32,6 +36,7 @@ import org.joda.time.LocalDate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,31 +49,28 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-    public static Date getNextYear(Date date) {
+    public static Date getNextYear(@NonNull Date date) {
         LocalDate currentDate = LocalDate.fromDateFields(date);
         return currentDate.plusYears(1).toDate();
     }
 
-    public static Date getNextDate(Date date) {
-        return new Date(date.getTime() + DateUtils.YEAR_IN_MILLIS);
+//    public static Date getNextDate(Date date) {
+//        return new Date(date.getTime() + DateUtils.YEAR_IN_MILLIS);
+//    }
+
+    public static int daysBetweenUsingJoda(@NonNull Date d1, @NonNull Date d2) {
+        return Math.abs(Days.daysBetween(new LocalDate(d1.getTime()), new LocalDate(d2.getTime())).getDays());
     }
 
-    public static int daysBetweenUsingJoda(Date d1, Date d2) {
-        return Days.daysBetween(new LocalDate(d1.getTime()), new LocalDate(d2.getTime())).getDays();
-    }
 
-
-    public static boolean isContactsPermissionIsGranted(Context context) {
+    public static boolean isContactsPermissionIsGranted(@NonNull Context context) {
         int permissionCheck = ContextCompat.checkSelfPermission(context,
                 Manifest.permission.READ_CONTACTS);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
+        return permissionCheck == PackageManager.PERMISSION_GRANTED;
     }
 
-    public static List<Birthday> getBirthdaysFromContact(Context context) {
+    @NonNull
+    public static List<Birthday> getBirthdaysFromContact(@NonNull Context context) {
         List<Birthday> birthdays = new ArrayList<>();
         Birthday birthday;
         Cursor cursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
@@ -77,18 +79,20 @@ public class Utils {
             String fullName = cursor.getString(
                     cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            birthday = new Birthday(id, fullName, phonenumber, new Date(), new Date(), false);
+            birthday = new Birthday(id, fullName, phonenumber, new Date(),false);
             birthdays.add(birthday);
         }
         cursor.close();
         return birthdays;
     }
 
+    @NonNull
     public static SimpleDateFormat getDateFormatter() {
         return new SimpleDateFormat("dd.MM.yyyy");
     }
 
-    public static List<SayHello> getSayHelloList(Context context) {
+    @NonNull
+    public static List<SayHello> getSayHelloList(@NonNull Context context) {
         List<SayHello> sayHellos = new ArrayList<>();
         SayHello sayHello;
         Cursor cursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
@@ -104,7 +108,7 @@ public class Utils {
         return sayHellos;
     }
 
-    public static void roundedProfileImage(Context context, ImageView imageView, int resourceId) {
+    public static void roundedProfileImage(@NonNull Context context, @NonNull ImageView imageView, int resourceId) {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
         RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
         rounded.setCornerRadius(bitmap.getWidth());
@@ -140,22 +144,23 @@ public class Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
-    public static Typeface getCampagneFont(Context context) {
+    public static Typeface getCampagneFont(@NonNull Context context) {
         return Typeface.createFromAsset(context.getAssets(), "fonts/champagne.ttf");
     }
 
-    public static Typeface getOpenBoldFont(Context context) {
+    public static Typeface getOpenBoldFont(@NonNull Context context) {
         return Typeface.createFromAsset(context.getAssets(), "fonts/OpenBold.ttf");
     }
 
-    public static Typeface getOpenItalicFont(Context context) {
+    public static Typeface getOpenItalicFont(@NonNull Context context) {
         return Typeface.createFromAsset(context.getAssets(), "fonts/OpenItalic.ttf");
     }
 
-    public static Typeface getOpenRegularFont(Context context) {
+    public static Typeface getOpenRegularFont(@NonNull Context context) {
         return Typeface.createFromAsset(context.getAssets(), "fonts/OpenRegular.ttf");
     }
 
+    @NonNull
     public static String getCurrentUserOsVersion() {
         int buildVersion = Build.VERSION.SDK_INT;
         String result = "UNKNOWN";
@@ -183,14 +188,10 @@ public class Utils {
     }
 
     public static boolean canSendSmsInPromisiousMode() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return false;
-        } else {
-            return true;
-        }
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT;
     }
 
-    public static void sendNewSms(String message, String sendTo) {
+    public static void sendNewSms(@NonNull String message, String sendTo) {
         SmsManager smsManager = SmsManager.getDefault();
         if (message.length() > 140) {
             ArrayList<String> messageParts = smsManager.divideMessage(message);
@@ -200,7 +201,7 @@ public class Utils {
         }
     }
 
-    public static String getContactName(Context context, String phoneNumber) {
+    public static String getContactName(@NonNull Context context, String phoneNumber) {
         ContentResolver cr = context.getContentResolver();
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
         Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
@@ -217,7 +218,8 @@ public class Utils {
         return contactName;
     }
 
-    public static HashMap<String, String> getTelephonyInfos(Context context) {
+    @NonNull
+    public static HashMap<String, String> getTelephonyInfos(@NonNull Context context) {
         HashMap<String, String> infos = new HashMap<>();
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 //        String phoneNumber = telephonyManager.getLine1Number();
@@ -243,13 +245,16 @@ public class Utils {
         return infos;
     }
 
-    private static String getUserEmail(Context context) {
+    @Nullable
+    private static String getUserEmail(@NonNull Context context) {
         String email = null;
         Pattern gmailPattern = Patterns.EMAIL_ADDRESS;
-        Account[] accounts = AccountManager.get(context).getAccounts();
-        for (Account account : accounts) {
-            if (gmailPattern.matcher(account.name).matches()) {
-                email = account.name;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            Account[] accounts = AccountManager.get(context).getAccounts();
+            for (Account account : accounts) {
+                if (gmailPattern.matcher(account.name).matches()) {
+                    email = account.name;
+                }
             }
         }
         if (email == null) {
@@ -258,6 +263,7 @@ public class Utils {
         return email;
     }
 
+    @NonNull
     public static SimpleDateFormat getFormatter() {
         return new SimpleDateFormat("dd.MM.yyyy");
     }
@@ -274,5 +280,22 @@ public class Utils {
 
     public static Uri getDefaultNotificationSoundUri() {
         return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+    }
+
+    public static Uri getDefaultAlarmSoundUri() {
+        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+    }
+
+    public static void vibrate(@NonNull Context context) {
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(5000);
+    }
+
+    public static Date adjustDate(@NonNull Date birthdate) {
+        int nbyears = Math.abs(birthdate.getYear() - new Date().getYear());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(birthdate);
+        calendar.add(Calendar.YEAR, nbyears);
+        return calendar.getTime();
     }
 }

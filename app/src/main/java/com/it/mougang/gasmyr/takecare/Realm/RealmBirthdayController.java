@@ -2,6 +2,8 @@ package com.it.mougang.gasmyr.takecare.Realm;
 
 import android.app.Activity;
 import android.app.Application;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.it.mougang.gasmyr.takecare.MyApplication;
@@ -24,7 +26,7 @@ import io.realm.Sort;
 
 public class RealmBirthdayController {
     private static RealmBirthdayController instance;
-    private final Realm realm;
+    private Realm realm;
 
     public RealmBirthdayController(Application application) {
         realm = Realm.getInstance(MyApplication.getInstance().realmConfiguration);
@@ -37,14 +39,14 @@ public class RealmBirthdayController {
         setAutoRefresh();
     }
 
-    public static RealmBirthdayController with(Fragment fragment) {
+    public static RealmBirthdayController with(@NonNull Fragment fragment) {
         if (instance == null) {
             instance = new RealmBirthdayController(fragment.getActivity().getApplication());
         }
         return instance;
     }
 
-    public static RealmBirthdayController with(Activity activity) {
+    public static RealmBirthdayController with(@NonNull Activity activity) {
         if (instance == null) {
             instance = new RealmBirthdayController(activity.getApplication());
         }
@@ -70,23 +72,26 @@ public class RealmBirthdayController {
         realm.setAutoRefresh(true);
     }
 
+    @NonNull
     public RealmResults<Birthday> getAllBirthdaysAsync() {
+        if(realm.isClosed()){
+            realm = Realm.getInstance(MyApplication.getInstance().realmConfiguration);
+        }
         RealmResults<Birthday> result = realm.where(Birthday.class).findAllAsync();
         return result.sort("isrealm", Sort.DESCENDING);
     }
 
-    public void updateBirthday(Birthday birthday, Date date) {
+    public void updateBirthday(@NonNull Birthday birthday, Date date) {
         realm.beginTransaction();
         birthday.setIsrealm(true);
         birthday.setBirthdate(date);
-        birthday.setNextbirthdate(Utils.getNextDate(date));
         realm.commitTransaction();
     }
 
-    public void saveBirthdayWithTransaction(final List<Birthday> birthdays) {
+    public void saveBirthdayWithTransaction(@NonNull final List<Birthday> birthdays) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
-            public void execute(Realm realm) {
+            public void execute(@NonNull Realm realm) {
                 for (Birthday birthday : birthdays) {
                     realm.copyToRealmOrUpdate(birthday);
                 }
@@ -98,7 +103,7 @@ public class RealmBirthdayController {
         realm.close();
     }
 
-    public void copyDataToRealm(List<Birthday> fromContacts) {
+    public void copyDataToRealm(@Nullable List<Birthday> fromContacts) {
         if (fromContacts != null && fromContacts.size() >= 1) {
             saveBirthdayWithTransaction(fromContacts);
         }

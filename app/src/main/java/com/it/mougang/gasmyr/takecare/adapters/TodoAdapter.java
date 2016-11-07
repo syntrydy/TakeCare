@@ -1,5 +1,6 @@
 package com.it.mougang.gasmyr.takecare.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,15 +30,16 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.MyViewHolder> 
         this.realmResults.addChangeListener(this);
     }
 
+    @NonNull
     @Override
-    public TodoAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TodoAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.todo_list_row, parent, false);
         return new TodoAdapter.MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final TodoAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final TodoAdapter.MyViewHolder holder, final int position) {
         final Todo todo = realmResults.get(position);
         holder.titleTv.setText(todo.getTitle());
         holder.descriptionTv.setText(todo.getDescription());
@@ -80,7 +82,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.MyViewHolder> 
         public TextView titleTv, descriptionTv, startdateTv, enddateTv;
         public CardView cardView;
 
-        public MyViewHolder(View view) {
+        public MyViewHolder(@NonNull View view) {
             super(view);
             cardView = (CardView) view.findViewById(R.id.card_view);
             titleTv = (TextView) view.findViewById(R.id.todotitle);

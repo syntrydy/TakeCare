@@ -1,6 +1,7 @@
 package com.it.mougang.gasmyr.takecare;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -41,13 +42,13 @@ public class MainActivityFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         myRecyclerView = (RecyclerView) view.findViewById(R.id.birthdayRecyclerView);
         myRecyclerView.setHasFixedSize(true);
@@ -66,7 +67,7 @@ public class MainActivityFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSayBithdayRowChanged(Birthday birthday) {
+    public void onSayBithdayRowChanged(@NonNull Birthday birthday) {
         currentBirthday = birthday;
         switch (birthday.getEventcode()) {
             case 1:
@@ -113,6 +114,11 @@ public class MainActivityFragment extends Fragment {
     public void onDestroy() {
         RealmBirthdayController.with(this).close();
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     private void showBirthdatePickerDialog() {

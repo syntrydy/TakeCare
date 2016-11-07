@@ -4,7 +4,14 @@
     tools:context="com.it.mougang.gasmyr.takecare.MainActivity">
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="101"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_search"
+        android:title="search"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_sync_white_24dp"
+        app:showAsAction="always"
+        app:actionViewClass="android.support.v7.widget.SearchView"></item>
 </menu>

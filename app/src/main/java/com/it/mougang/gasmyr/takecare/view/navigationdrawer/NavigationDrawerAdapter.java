@@ -5,8 +5,10 @@ package com.it.mougang.gasmyr.takecare.view.navigationdrawer;
  */
 
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,13 +33,14 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    public NavigationDrawerAdapter(Context context, List<NavigationDrawerItem> items) {
+    public NavigationDrawerAdapter(@NonNull Context context, List<NavigationDrawerItem> items) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.navigationDrawerItems = items;
         sharedPreferences = context.getSharedPreferences(GlobalConstants.TAKECARE_SHARE_PRFERENCE, Context.MODE_PRIVATE);
     }
 
+    @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.nav_drawer_list_item, parent, false);
@@ -46,7 +49,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         final NavigationDrawerItem current = navigationDrawerItems.get(position);
         holder.imgIcon.setImageResource(current.getNavItemImageId());
         holder.title.setText(current.getNavItemTitle());
@@ -61,7 +64,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
 
                     if (current.getId() == 1) {
-                        AlarmManagerUtils.scheduleBirthdayAlarm(context);
+                        AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                        AlarmManagerUtils.scheduleBirthdayAlarm(context,alarm);
                         Toast.makeText(context, "alarm is setup", Toast.LENGTH_SHORT).show();
                     } else if (current.getId() == 2) {
 
@@ -79,9 +83,9 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
                     editor.putBoolean(current.getNavItemTitle(), false);
                     editor.commit();
 
-
                     if (current.getId() == 1) {
-                        AlarmManagerUtils.cancelBirthDayAlarm(context);
+                        AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                        AlarmManagerUtils.cancelBirthDayAlarm(context,alarm);
                         Toast.makeText(context, "alarm is cancel", Toast.LENGTH_SHORT).show();
                     } else if (current.getId() == 2) {
 
@@ -110,7 +114,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         ImageView imgIcon;
         Switch aSwitch;
 
-        public MyViewHolder(View itemView) {
+        public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.nav_item_title);
             imgIcon = (ImageView) itemView.findViewById(R.id.nav_item_image);
