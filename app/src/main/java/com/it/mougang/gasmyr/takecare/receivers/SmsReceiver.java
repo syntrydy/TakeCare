@@ -16,6 +16,8 @@ import com.it.mougang.gasmyr.takecare.service.SpeechService;
 import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
 
+import java.util.Date;
+
 public class SmsReceiver extends BroadcastReceiver {
     public static final String ANDROID_PROVIDER_TELEPHONY_SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
     public static final String ANDROID_PROVIDER_TELEPHONY_SMS_SENT = "android.provider.Telephony.SMS_SENT";
@@ -41,6 +43,8 @@ public class SmsReceiver extends BroadcastReceiver {
     @Nullable
     private String userName = "";
     private String fullMessage = "";
+    private boolean responderIsEnable;
+    private String reponderMessage="";
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
@@ -70,19 +74,10 @@ public class SmsReceiver extends BroadcastReceiver {
                 }
                 if (intent.getAction().equals(ANDROID_PROVIDER_TELEPHONY_SMS_RECEIVED)) {
                     if (SMS_BODY.length() >= 2) {
-                        if (canUseSpeakerFeature && incomingSmsSpeakerIsEnable) {
-                            if (incomingSmsSummarySpeakerIsEnable &&
-                                    !incomingSmsBodySpeakerIsEnable) {
-                                fullMessage = messageSummary.replace("{name}", userName);
-                                fullMessage = fullMessage.replace("{sname}", SMS_SENDER);
-                            }
-                            if ((incomingSmsSpeakerIsEnable && incomingSmsBodySpeakerIsEnable) ||
-                                    (!incomingSmsSpeakerIsEnable && incomingSmsBodySpeakerIsEnable)) {
-                                fullMessage = messageBody.replace("{name}", userName);
-                                fullMessage = fullMessage.replace("{sname}", SMS_SENDER);
-                                fullMessage = fullMessage.replace("{message}", SMS_BODY);
-                            }
-                            startSpeakerService(context, fullMessage);
+                        manage_incoming_sms_speaker(context);
+                        if(responderIsEnable){
+                            reponderMessage="Salut"+SMS_SENDER+" "+reponderMessage+" @autocompute "+new Date().getTime();
+                            Utils.sendNewSms(reponderMessage,SMS_SENDER);
                         }
                     }
                 }
@@ -93,6 +88,23 @@ public class SmsReceiver extends BroadcastReceiver {
             }
         } catch (Exception e) {
             Log.e("GASMYR", e.getMessage());
+        }
+    }
+
+    private void manage_incoming_sms_speaker(@NonNull Context context) {
+        if (canUseSpeakerFeature && incomingSmsSpeakerIsEnable) {
+            if (incomingSmsSummarySpeakerIsEnable &&
+                    !incomingSmsBodySpeakerIsEnable) {
+                fullMessage = messageSummary.replace("{name}", userName);
+                fullMessage = fullMessage.replace("{sname}", SMS_SENDER);
+            }
+            if ((incomingSmsSpeakerIsEnable && incomingSmsBodySpeakerIsEnable) ||
+                    (!incomingSmsSpeakerIsEnable && incomingSmsBodySpeakerIsEnable)) {
+                fullMessage = messageBody.replace("{name}", userName);
+                fullMessage = fullMessage.replace("{sname}", SMS_SENDER);
+                fullMessage = fullMessage.replace("{message}", SMS_BODY);
+            }
+            startSpeakerService(context, fullMessage);
         }
     }
 
@@ -115,6 +127,8 @@ public class SmsReceiver extends BroadcastReceiver {
                 GlobalConstants.TAKECARE_ENABLE_INCOMING_SMS_BODY_SPEAKER, false);
         canUseSpeakerFeature = sharedPreferences.getBoolean(
                 GlobalConstants.TAKECARE_CAN_USE_SPEAKER_FEATURE, false);
+        reponderMessage=globalPreferences.getString(GlobalConstants.TAKECARE_SMS_RESPONDER_MESSAGE,"@compute");
+        responderIsEnable=globalPreferences.getBoolean(GlobalConstants.TAKECARE_SMS_RESPONDER,false);
         messageBody = globalPreferences.getString(GlobalConstants.TAKECARE_SMS_BODY_MODEL_SPEAKER, "");
         messageSummary = globalPreferences.getString(GlobalConstants.TAKECARE_SMS_SUMMARY_MODEL_SPEAKER, "");
         userName = globalPreferences.getString(GlobalConstants.TAKECARE_USER_DEFINE_NAME, "");

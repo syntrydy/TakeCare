@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="birthday_notifone">"Hi Hi Hi there are "</string>
+    <string name="birthday_notiftwo" />
+    <string name="edit_birthday_text">edit birthday</string>
+    <string name="birthday_notification_title">Look at your firends birthdays</string>
+    <string name="birthday_notification_textOne" />
+    <string name="birthday_notification_textTwo" />
+    <string name="days_text">days</string>
+</resources>

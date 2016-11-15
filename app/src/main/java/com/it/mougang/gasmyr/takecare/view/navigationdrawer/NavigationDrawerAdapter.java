@@ -51,7 +51,6 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         final NavigationDrawerItem current = navigationDrawerItems.get(position);
-        holder.imgIcon.setImageResource(current.getNavItemImageId());
         holder.title.setText(current.getNavItemTitle());
         holder.aSwitch.setChecked(sharedPreferences.getBoolean(current.getNavItemTitle(), true));
         holder.aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -65,8 +64,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
                     if (current.getId() == 1) {
                         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                        AlarmManagerUtils.scheduleBirthdayAlarm(context,alarm);
-                        Toast.makeText(context, "alarm is setup", Toast.LENGTH_SHORT).show();
+                        AlarmManagerUtils.scheduleBirthdayAlarm(context, alarm);
                     } else if (current.getId() == 2) {
 
                     } else if (current.getId() == 3) {
@@ -85,8 +83,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
                     if (current.getId() == 1) {
                         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                        AlarmManagerUtils.cancelBirthDayAlarm(context,alarm);
-                        Toast.makeText(context, "alarm is cancel", Toast.LENGTH_SHORT).show();
+                        AlarmManagerUtils.cancelBirthDayAlarm(context, alarm);
                     } else if (current.getId() == 2) {
 
                     } else if (current.getId() == 3) {
@@ -111,13 +108,13 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        ImageView imgIcon;
+        //        ImageView imgIcon;
         Switch aSwitch;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.nav_item_title);
-            imgIcon = (ImageView) itemView.findViewById(R.id.nav_item_image);
+//            imgIcon = (ImageView) itemView.findViewById(R.id.nav_item_image);
             aSwitch = (Switch) itemView.findViewById(R.id.mySwitch);
             aSwitch.setChecked(true);
         }

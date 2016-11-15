@@ -1,5 +1,6 @@
 package com.it.mougang.gasmyr.takecare;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,8 @@ import android.widget.Toast;
 import com.it.mougang.gasmyr.takecare.Realm.RealmBirthdayController;
 import com.it.mougang.gasmyr.takecare.adapters.BirthdayAdapter;
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
+import com.it.mougang.gasmyr.takecare.domain.BirthdayMessageModel;
+import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
 import com.it.mougang.gasmyr.takecare.utils.datepicker.DatePickerFragment;
 
@@ -22,6 +26,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.RealmChangeListener;
@@ -33,6 +38,7 @@ public class MainActivityFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private BirthdayAdapter adapter;
     private RealmResults<Birthday> realmObjects;
+    private SimpleDateFormat formatter = Utils.getFormatter();
 
     private Birthday currentBirthday;
 
@@ -71,29 +77,38 @@ public class MainActivityFragment extends Fragment {
         currentBirthday = birthday;
         switch (birthday.getEventcode()) {
             case 1:
-                Toast.makeText(getActivity().getApplicationContext(), "clicked " + birthday.getFullName(), Toast.LENGTH_SHORT).show();
                 break;
             case 2:
-                Toast.makeText(getActivity().getApplicationContext(), "long clicked " + birthday.getFullName(), Toast.LENGTH_SHORT).show();
+                launchBirthdayDetail(birthday);
                 break;
             case 3:
                 showBirthdatePickerDialog();
-                Toast.makeText(getActivity().getApplicationContext(), "set bithday " + birthday.getFullName() + " ->" + currentBirthday.getId(), Toast.LENGTH_SHORT).show();
                 break;
             case 4:
-                Toast.makeText(getActivity().getApplicationContext(), "checked " + birthday.getFullName(), Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
+    private void launchBirthdayDetail(Birthday currentBirthday) {
+        Intent intent = new Intent(getActivity().getApplicationContext(), BirthdayDetailActivity.class);
+        intent.putExtra(GlobalConstants.BIRTHDAY_DATE, formatter.format(currentBirthday.getBirthdate()));
+        intent.putExtra(GlobalConstants.BIRTHDAY_NEXT_DATE, formatter.format(Utils.getNextBirthdate(currentBirthday.getBirthdate())));
+        intent.putExtra(GlobalConstants.BIRTHDAY_FULLNAME, currentBirthday.getFullName());
+        intent.putExtra(GlobalConstants.BIRTHDAY_NUMBER, currentBirthday.getPhonenumber());
+        intent.putExtra(GlobalConstants.BIRTHDAY_REMAINING_DAYS, Utils.getRemainingsDays(currentBirthday.getBirthdate()));
+        intent.putExtra(GlobalConstants.BIRTHDAY_ID, String.valueOf(currentBirthday.getId()));
+        getActivity().startActivity(intent);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBirthdatePicked(Date date) {
-        RealmBirthdayController.with(this).updateBirthday(currentBirthday,date);
+        RealmBirthdayController.with(this).updateBirthday(currentBirthday, date);
         adapter.notifyDataSetChanged();
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onChangedInDatabase(boolean hasChanged){
-        if(hasChanged){
+    public void onChangedInDatabase(boolean hasChanged) {
+        if (hasChanged) {
             adapter.notifyDataSetChanged();
         }
     }

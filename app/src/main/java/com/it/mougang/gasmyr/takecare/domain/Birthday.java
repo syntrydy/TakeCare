@@ -1,9 +1,13 @@
 package com.it.mougang.gasmyr.takecare.domain;
 
+import com.it.mougang.gasmyr.takecare.utils.Utils;
+
+import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
@@ -23,6 +27,7 @@ public class Birthday extends RealmObject {
     @Ignore
     private int eventcode;
     boolean isrealm;
+    private BirthdayMessageModel messageModel;
 
 
     public Birthday() {
@@ -84,7 +89,13 @@ public class Birthday extends RealmObject {
         this.isrealm = isrealm;
     }
 
+    public BirthdayMessageModel getMessageModel() {
+        return messageModel;
+    }
 
+    public void setMessageModel(BirthdayMessageModel messageModel) {
+        this.messageModel = messageModel;
+    }
     @Override
     public boolean equals(Object firstBirthday) {
         boolean resultValue = false;

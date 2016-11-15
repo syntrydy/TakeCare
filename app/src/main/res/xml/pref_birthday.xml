@@ -1,13 +1,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <!--<ListPreference-->
-        <!--android:defaultValue="180"-->
-        <!--android:entries="@array/pref_sync_frequency_titles"-->
-        <!--android:entryValues="@array/pref_sync_frequency_values"-->
-        <!--android:key="sync_frequency"-->
-        <!--android:negativeButtonText="@null"-->
-        <!--android:positiveButtonText="@null"-->
-        <!--android:title="@string/pref_title_sync_frequency" />-->
-    <!--<Preference android:title="@string/pref_title_system_sync_settings">-->
-        <!--<intent android:action="android.settings.SYNC_SETTINGS" />-->
-    <!--</Preference>-->
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="example_switch"
+        android:summary="@string/pref_enable_birthday_description"
+        android:title="@string/pref_enable_birthday_notification" />
+    <ListPreference
+        android:defaultValue="3"
+        android:entries="@array/pref_birthday_notification_values_label"
+        android:entryValues="@array/pref_birthday_notification_values"
+        android:key="birthday_notification_periods"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_number_of_before_ntification" />
 </PreferenceScreen>

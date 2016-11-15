@@ -60,7 +60,7 @@ public class NavigationDrawerFragment extends Fragment {
         TextView profileName = (TextView) mDrawerLayout.findViewById(R.id.profileName);
         profileName.setTypeface(Utils.getCampagneFont(getActivity().getApplicationContext()));
         TextView profileEmail = (TextView) mDrawerLayout.findViewById(R.id.profileEmail);
-        profileEmail.setTypeface(Utils.getCampagneFont(getActivity().getApplicationContext()));
+        profileEmail.setTypeface(Utils.getOpenItalicFont(getActivity().getApplicationContext()));
         Utils.roundedProfileImage(getContext(), drawerProfile, R.drawable.profile05);
         String username = MyApplication.getInstance().infos.get(GlobalConstants.TAKECARE_USER_NAME);
         profileName.setText(username);

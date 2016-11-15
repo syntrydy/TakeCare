@@ -24,7 +24,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.it.mougang.gasmyr.takecare.Realm.RealmBirthdayController;
+import com.it.mougang.gasmyr.takecare.Realm.RealmMessageModelController;
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
+import com.it.mougang.gasmyr.takecare.domain.BirthdayMessageModel;
+import com.it.mougang.gasmyr.takecare.utils.BirthdayMessageModelLoader;
 import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
 import com.it.mougang.gasmyr.takecare.view.navigationdrawer.NavigationDrawerFragment;
@@ -37,12 +40,12 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    public static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 12;
+    public static final int MY_PERMISSIONS_REQUEST_SMS = 21;
     private Toolbar toolbar;
     private FragmentPagerItemAdapter pagerItemAdapter;
     private ViewPager mPager;
     private SmartTabLayout viewPagerTab;
-    public static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 12;
-    public static final int MY_PERMISSIONS_REQUEST_SMS = 21;
     private ProgressBar spinner;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -82,10 +85,7 @@ public class MainActivity extends AppCompatActivity {
         pagerItemAdapter = new FragmentPagerItemAdapter(
                 getSupportFragmentManager(), FragmentPagerItems.with(this)
                 .add(R.string.app_tab_title_birtdays, MainActivityFragment.class)
-                .add(R.string.app_tab_title_todos, TodosFragment.class)
-                .add(R.string.app_tab_title_sayhello, SayHelloFragment.class)
-                .add(R.string.app_tab_title_alarms, MainActivityFragment.class)
-                .add(R.string.app_tab_title_recordings, MainActivityFragment.class)
+                //.add(R.string.app_tab_title_todos, TodosFragment.class)
                 .create());
         mPager = (ViewPager) findViewById(R.id.myViewPager);
         mPager.setAdapter(pagerItemAdapter);
@@ -139,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             spinner.setVisibility(View.VISIBLE);
             if (sharedPreferences.getBoolean(GlobalConstants.ASSISTME_IS_FISRT_LAUNCH, true)) {
+                BirthdayMessageModelLoader loader=new BirthdayMessageModelLoader();
+                loader.loadMessages(MainActivity.this);
                 copyDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
                 editor = sharedPreferences.edit();
                 editor.putBoolean(GlobalConstants.ASSISTME_IS_FISRT_LAUNCH, false);
@@ -208,7 +210,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void copyDataToRealm(List<Birthday> birthdays) {
-        RealmBirthdayController.with(this).copyDataToRealm(birthdays);
+        BirthdayMessageModel model=RealmMessageModelController.with(this).getMessageById(5);
+        RealmBirthdayController.with(this).copyDataToRealm(birthdays,model);
     }
 
 }

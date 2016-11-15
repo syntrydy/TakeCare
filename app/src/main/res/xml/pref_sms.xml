@@ -36,4 +36,20 @@
         android:selectAllOnFocus="true"
         android:singleLine="false"
         android:title="@string/settings_sms_body_model_title" />
+
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="takecare_sms_responder"
+        android:summary="@string/settings_sms_enable_responder"
+        android:title="@string/settings_sms_enable_responder_title" />
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/settings_sms_responder"
+        android:inputType="textCapWords"
+        android:key="takecare_sms_responder_message"
+        android:maxLines="5"
+        android:selectAllOnFocus="true"
+        android:singleLine="false"
+        android:title="@string/settings_sms_responder_title" />
 </PreferenceScreen>

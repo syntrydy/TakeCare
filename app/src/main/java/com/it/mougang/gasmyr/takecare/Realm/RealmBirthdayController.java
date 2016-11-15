@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 
 import com.it.mougang.gasmyr.takecare.MyApplication;
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
+import com.it.mougang.gasmyr.takecare.domain.BirthdayMessageModel;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -88,11 +89,19 @@ public class RealmBirthdayController {
         realm.commitTransaction();
     }
 
-    public void saveBirthdayWithTransaction(@NonNull final List<Birthday> birthdays) {
+    public void updateBirthDay(long birthdayId, BirthdayMessageModel model) {
+        Birthday birthday=realm.where(Birthday.class).equalTo("id",birthdayId).findFirstAsync();
+        realm.beginTransaction();
+        birthday.setMessageModel(model);
+        realm.commitTransaction();
+    }
+
+    public void saveBirthdayWithTransaction(@NonNull final List<Birthday> birthdays,final BirthdayMessageModel model) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
                 for (Birthday birthday : birthdays) {
+                    birthday.setMessageModel(model);
                     realm.copyToRealmOrUpdate(birthday);
                 }
             }
@@ -103,9 +112,9 @@ public class RealmBirthdayController {
         realm.close();
     }
 
-    public void copyDataToRealm(@Nullable List<Birthday> fromContacts) {
+    public void copyDataToRealm(@Nullable List<Birthday> fromContacts,BirthdayMessageModel defaultModel) {
         if (fromContacts != null && fromContacts.size() >= 1) {
-            saveBirthdayWithTransaction(fromContacts);
+            saveBirthdayWithTransaction(fromContacts,defaultModel);
         }
     }
 }

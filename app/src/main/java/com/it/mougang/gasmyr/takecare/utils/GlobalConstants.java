@@ -46,4 +46,17 @@ public class GlobalConstants {
 
     public static final String TAKECARE_TEXTTOSPEECH_Message = "assistTextToSpeechMessage";
     public static final String TAKECARE_TEXTTOSPEECH_TARGET = "assistTextToSpeechTarget";
+
+    public static final String TAKECARE_BIRTHDAY_NOTIFICATIONS_PERIODS = "birthday_notification_periods";
+
+    public static final String TAKECARE_SMS_RESPONDER = "takecare_sms_responder";
+    public static final String TAKECARE_SMS_RESPONDER_MESSAGE = "takecare_sms_responder_message";
+
+    public static final String BIRTHDAY_DATE="birthdaydate";
+    public static final String BIRTHDAY_NEXT_DATE="birthdaynextdate";
+    public static final String BIRTHDAY_FULLNAME="birthdayfullname";
+    public static final String BIRTHDAY_NUMBER="birthdaynumber";
+    public static final String BIRTHDAY_REMAINING_DAYS="birthdayremainingdays";
+    public static final String BIRTHDAY_ID="birthdayid";
+    public static final String BIRTHDAY_MODEL_ID="birthdaymodelid";
 }

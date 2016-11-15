@@ -61,6 +61,7 @@ public class SpeechService extends Service implements TextToSpeech.OnInitListene
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
+            tts.setSpeechRate(0.8f);
             int result = tts.setLanguage(Locale.getDefault());
             if (result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED) {
                 speak(isCallMessage);
@@ -73,12 +74,12 @@ public class SpeechService extends Service implements TextToSpeech.OnInitListene
         if (tts != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 tts.speak(message, TextToSpeech.QUEUE_FLUSH, null, null);
-                if(isCallMessage){
+                if (isCallMessage) {
                     tts.speak(message, TextToSpeech.QUEUE_ADD, null, null);
                 }
             } else {
                 tts.speak(message, TextToSpeech.QUEUE_FLUSH, null);
-                if(isCallMessage){
+                if (isCallMessage) {
                     tts.speak(message, TextToSpeech.QUEUE_ADD, null);
                 }
             }

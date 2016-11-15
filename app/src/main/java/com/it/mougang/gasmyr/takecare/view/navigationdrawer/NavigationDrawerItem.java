@@ -15,7 +15,7 @@ import java.util.List;
 
 public class NavigationDrawerItem {
     private String NavItemTitle;
-    private int NavItemImageId;
+//    private int NavItemImageId;
     private int id;
 
     public NavigationDrawerItem() {
@@ -30,7 +30,7 @@ public class NavigationDrawerItem {
         for (int i = 0; i < titles.length; i++) {
             NavigationDrawerItem item = new NavigationDrawerItem();
             item.setNavItemTitle(titles[i]);
-            item.setNavItemImageId(imagesIds[i]);
+//            item.setNavItemImageId(imagesIds[i]);
             item.setId(ids[i]);
             items.add(item);
         }
@@ -82,13 +82,13 @@ public class NavigationDrawerItem {
         NavItemTitle = navItemTitle;
     }
 
-    public int getNavItemImageId() {
-        return NavItemImageId;
-    }
+//    public int getNavItemImageId() {
+//        return NavItemImageId;
+//    }
 
-    public void setNavItemImageId(int navItemImageId) {
-        NavItemImageId = navItemImageId;
-    }
+//    public void setNavItemImageId(int navItemImageId) {
+//        NavItemImageId = navItemImageId;
+//    }
 
     public int getId() {
         return id;

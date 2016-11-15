@@ -32,6 +32,7 @@ import io.realm.RealmResults;
 public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyViewHolder> implements RealmChangeListener<RealmResults<Birthday>> {
 
     private final SimpleDateFormat format = Utils.getDateFormatter();
+    private final Date defaultDate = Utils.getDefaultDate();
     private final EventBus eventBus = EventBus.getDefault();
     private RealmResults<Birthday> realmResults;
     private Context context;
@@ -57,15 +58,18 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
         holder.fullnameTv.setText(birthday.getFullName());
         Utils.roundedProfileImage(context, holder.photoImageV, R.drawable.profile02);
         holder.phonenumberTv.setText(birthday.getPhonenumber());
-        holder.birthdayTv.setText(format.format(birthday.getBirthdate()));
-        if (birthday.getBirthdate().after(new Date())) {
-            holder.remainingdaysTv.setText(String.valueOf(Utils.daysBetweenUsingJoda(new Date(), birthday.getBirthdate())));
-        } else if (birthday.getBirthdate().getYear() == new Date().getYear()) {
-            holder.remainingdaysTv.setText(String.valueOf(Utils.daysBetweenUsingJoda(birthday.getBirthdate(), new Date())));
-        } else if (birthday.getBirthdate().getYear() != new Date().getYear()) {
-            holder.remainingdaysTv.setText(String.valueOf(Utils.daysBetweenUsingJoda(Utils.adjustDate(birthday.getBirthdate()), new Date())));
+        if (birthday.isrealm()) {
+            holder.setBirthdateButton.setText(R.string.edit_birthday_text);
+            holder.setBirthdateButton.setBackgroundResource(R.color.colorAccent2);
+            holder.setBirthdateButton.setEnabled(false);
+            holder.checkBox.setChecked(false);
+            holder.birthdayTv.setText(format.format(birthday.getBirthdate()));
+            holder.remainingdaysTv.setText(""+Utils.getRemainingsDays(birthday.getBirthdate()));
         } else {
-            holder.remainingdaysTv.setText(String.valueOf(Utils.daysBetweenUsingJoda(birthday.getBirthdate(), new Date())));
+            holder.checkBox.setEnabled(false);
+            holder.checkBox.setChecked(true);
+            holder.birthdayTv.setText(format.format(defaultDate));
+            holder.remainingdaysTv.setText("***");
         }
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,15 +93,6 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
                 eventBus.post(birthday);
             }
         });
-        if (birthday.isrealm()) {
-            holder.setBirthdateButton.setText("edit birthday");
-            holder.setBirthdateButton.setBackgroundResource(R.color.colorAccent2);
-            holder.setBirthdateButton.setEnabled(false);
-            holder.checkBox.setChecked(false);
-        } else {
-            holder.checkBox.setEnabled(false);
-            holder.checkBox.setChecked(true);
-        }
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -141,7 +136,7 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
             fullnameTv = (TextView) view.findViewById(R.id.fullName);
             phonenumberTv = (TextView) view.findViewById(R.id.phonenumber);
             birthdayTv = (TextView) view.findViewById(R.id.birthdate);
-            remainingdaysTv = (TextView) view.findViewById(R.id.remainingdays);
+            remainingdaysTv = (TextView) view.findViewById(R.id.remaining_days);
             photoImageV = (ImageView) view.findViewById(R.id.photo);
             setBirthdateButton = (Button) view.findViewById(R.id.setbirthdatebutton);
             checkBox = (CheckBox) view.findViewById(R.id.checkBox);

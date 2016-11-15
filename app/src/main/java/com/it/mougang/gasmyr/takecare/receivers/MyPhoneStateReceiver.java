@@ -189,7 +189,7 @@ public class MyPhoneStateReceiver extends BroadcastReceiver {
         private void startSpeakerService(@NonNull Context context, String message) {
             Intent speakerServiceIntent = new Intent(context, SpeechService.class);
             speakerServiceIntent.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_Message, message);
-            speakerServiceIntent.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_TARGET, false);
+            speakerServiceIntent.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_TARGET, true);
             context.startService(speakerServiceIntent);
         }
 
