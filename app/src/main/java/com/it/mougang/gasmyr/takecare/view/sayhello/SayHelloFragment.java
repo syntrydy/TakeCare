@@ -7,33 +7,30 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.it.mougang.gasmyr.takecare.R;
+import com.it.mougang.gasmyr.takecare.Realm.RealmBirthdayController;
 import com.it.mougang.gasmyr.takecare.adapters.SayHelloAdapter;
-import com.it.mougang.gasmyr.takecare.domain.Birthday;
 import com.it.mougang.gasmyr.takecare.domain.SayHello;
-import com.it.mougang.gasmyr.takecare.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SayHelloFragment extends Fragment{
+public class SayHelloFragment extends Fragment {
 
     private RecyclerView myRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private List<SayHello> sayHellos;
+    private RealmResults<SayHello> sayHellos;
     private SayHelloAdapter adapter;
 
 
@@ -55,31 +52,33 @@ public class SayHelloFragment extends Fragment{
         layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         myRecyclerView.setLayoutManager(layoutManager);
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        sayHellos = new ArrayList<>();
+        sayHellos = RealmBirthdayController.with(this).getAllSayHelloAsync();
         adapter = new SayHelloAdapter(sayHellos, getActivity().getApplicationContext());
-        adapter.clear();
-        adapter.addAll(Utils.getSayHelloList(getContext()));
+        sayHellos.addChangeListener(new RealmChangeListener<RealmResults<SayHello>>() {
+            @Override
+            public void onChange(RealmResults<SayHello> element) {
+                adapter.notifyDataSetChanged();
+            }
+        });
         myRecyclerView.setAdapter(adapter);
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSayHelloRowChanged(@NonNull SayHello sayHello) {
-        switch (sayHello.getEventcode()){
+        switch (sayHello.getEventcode()) {
             case 1:
-                Toast.makeText(getActivity().getApplicationContext(),"clicked "+sayHello.getFullName(),Toast.LENGTH_SHORT).show();
                 break;
             case 2:
-                Toast.makeText(getActivity().getApplicationContext(),"long clicked "+sayHello.getFullName(),Toast.LENGTH_SHORT).show();
                 break;
             case 3:
-                Toast.makeText(getActivity().getApplicationContext(),"said hello "+sayHello.getFullName(),Toast.LENGTH_SHORT).show();
-                break;
-            case 4:
-                Toast.makeText(getActivity().getApplicationContext(),"bipme" +sayHello.getFullName(),Toast.LENGTH_SHORT).show();
+                handleRowChecked(sayHello, sayHello.getStatus());
                 break;
         }
-        Log.d("XAVIERE",sayHello.getFullName());
+    }
+
+    private void handleRowChecked(SayHello sayHello,boolean status) {
+        RealmBirthdayController.with(getActivity()).updateSayHello(sayHello, status);
     }
 
     @Override

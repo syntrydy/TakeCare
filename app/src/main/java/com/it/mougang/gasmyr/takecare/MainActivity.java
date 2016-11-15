@@ -24,10 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.it.mougang.gasmyr.takecare.Realm.RealmBirthdayController;
-import com.it.mougang.gasmyr.takecare.Realm.RealmMessageModelController;
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
-import com.it.mougang.gasmyr.takecare.domain.BirthdayMessageModel;
-import com.it.mougang.gasmyr.takecare.utils.BirthdayMessageModelLoader;
+import com.it.mougang.gasmyr.takecare.domain.SayHello;
 import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
 import com.it.mougang.gasmyr.takecare.view.navigationdrawer.NavigationDrawerFragment;
@@ -85,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         pagerItemAdapter = new FragmentPagerItemAdapter(
                 getSupportFragmentManager(), FragmentPagerItems.with(this)
                 .add(R.string.app_tab_title_birtdays, MainActivityFragment.class)
-                //.add(R.string.app_tab_title_todos, TodosFragment.class)
+                .add(R.string.app_tab_title_sayhello, SayHelloFragment.class)
                 .create());
         mPager = (ViewPager) findViewById(R.id.myViewPager);
         mPager.setAdapter(pagerItemAdapter);
@@ -114,7 +112,13 @@ public class MainActivity extends AppCompatActivity {
                     floatingActionButton.setVisibility(View.INVISIBLE);
                 } else if (currentFragment instanceof TodosFragment) {
                     floatingActionButton.setVisibility(View.VISIBLE);
-                } else {
+                }
+                else if (currentFragment instanceof SayHelloFragment) {
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                    floatingActionButton.setImageResource(R.drawable.ic_settings_applications_white_24dp);
+                }
+
+                else {
                     floatingActionButton.setVisibility(View.INVISIBLE);
                 }
             }
@@ -139,9 +143,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             spinner.setVisibility(View.VISIBLE);
             if (sharedPreferences.getBoolean(GlobalConstants.ASSISTME_IS_FISRT_LAUNCH, true)) {
-                BirthdayMessageModelLoader loader=new BirthdayMessageModelLoader();
-                loader.loadMessages(MainActivity.this);
                 copyDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
+                copyHellosToRealm(Utils.getSayHelloList(getApplicationContext()));
                 editor = sharedPreferences.edit();
                 editor.putBoolean(GlobalConstants.ASSISTME_IS_FISRT_LAUNCH, false);
                 editor.commit();
@@ -189,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
                     MyApplication.getInstance().setInfos(Utils.getTelephonyInfos(getApplicationContext()));
                     if (sharedPreferences.getBoolean(GlobalConstants.ASSISTME_IS_FISRT_LAUNCH, true)) {
                         copyDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
+                        copyHellosToRealm(Utils.getSayHelloList(getApplicationContext()));
                         editor = sharedPreferences.edit();
                         editor.putBoolean(GlobalConstants.ASSISTME_IS_FISRT_LAUNCH, false);
                         editor.apply();
@@ -210,8 +214,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void copyDataToRealm(List<Birthday> birthdays) {
-        BirthdayMessageModel model=RealmMessageModelController.with(this).getMessageById(5);
-        RealmBirthdayController.with(this).copyDataToRealm(birthdays,model);
+        RealmBirthdayController.with(this).copyDataToRealm(birthdays);
+    }
+
+    private void copyHellosToRealm(List<SayHello> hellos) {
+        RealmBirthdayController.with(this).copyHellosToRealm(hellos);
     }
 
 }

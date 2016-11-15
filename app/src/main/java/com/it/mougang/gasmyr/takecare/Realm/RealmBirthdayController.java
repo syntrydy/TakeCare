@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 import com.it.mougang.gasmyr.takecare.MyApplication;
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
 import com.it.mougang.gasmyr.takecare.domain.BirthdayMessageModel;
-import com.it.mougang.gasmyr.takecare.utils.Utils;
+import com.it.mougang.gasmyr.takecare.domain.SayHello;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -75,11 +75,20 @@ public class RealmBirthdayController {
 
     @NonNull
     public RealmResults<Birthday> getAllBirthdaysAsync() {
-        if(realm.isClosed()){
+        if (realm.isClosed()) {
             realm = Realm.getInstance(MyApplication.getInstance().realmConfiguration);
         }
         RealmResults<Birthday> result = realm.where(Birthday.class).findAllAsync();
         return result.sort("isrealm", Sort.DESCENDING);
+    }
+
+    @NonNull
+    public RealmResults<SayHello> getAllSayHelloAsync() {
+        if (realm.isClosed()) {
+            realm = Realm.getInstance(MyApplication.getInstance().realmConfiguration);
+        }
+        RealmResults<SayHello> result = realm.where(SayHello.class).findAllAsync();
+        return result.sort("isSheduled", Sort.DESCENDING);
     }
 
     public void updateBirthday(@NonNull Birthday birthday, Date date) {
@@ -89,19 +98,24 @@ public class RealmBirthdayController {
         realm.commitTransaction();
     }
 
+    public void updateSayHello(@NonNull SayHello sayHello, boolean status) {
+        realm.beginTransaction();
+        sayHello.setSheduled(status);
+        realm.commitTransaction();
+    }
+
     public void updateBirthDay(long birthdayId, BirthdayMessageModel model) {
-        Birthday birthday=realm.where(Birthday.class).equalTo("id",birthdayId).findFirstAsync();
+        Birthday birthday = realm.where(Birthday.class).equalTo("id", birthdayId).findFirstAsync();
         realm.beginTransaction();
         birthday.setMessageModel(model);
         realm.commitTransaction();
     }
 
-    public void saveBirthdayWithTransaction(@NonNull final List<Birthday> birthdays,final BirthdayMessageModel model) {
+    public void saveBirthdayWithTransaction(@NonNull final List<Birthday> birthdays) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
                 for (Birthday birthday : birthdays) {
-                    birthday.setMessageModel(model);
                     realm.copyToRealmOrUpdate(birthday);
                 }
             }
@@ -112,9 +126,26 @@ public class RealmBirthdayController {
         realm.close();
     }
 
-    public void copyDataToRealm(@Nullable List<Birthday> fromContacts,BirthdayMessageModel defaultModel) {
+    public void copyDataToRealm(@Nullable List<Birthday> fromContacts) {
         if (fromContacts != null && fromContacts.size() >= 1) {
-            saveBirthdayWithTransaction(fromContacts,defaultModel);
+            saveBirthdayWithTransaction(fromContacts);
         }
+    }
+
+    public void copyHellosToRealm(@Nullable List<SayHello> hellos) {
+        if (hellos != null && hellos.size() >= 1) {
+            saveSayHelloWithTransaction(hellos);
+        }
+    }
+
+    private void saveSayHelloWithTransaction(final List<SayHello> hellos) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(@NonNull Realm realm) {
+                for (SayHello hello : hellos) {
+                    realm.copyToRealmOrUpdate(hello);
+                }
+            }
+        });
     }
 }

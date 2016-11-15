@@ -113,11 +113,11 @@ public class Utils {
         SayHello sayHello;
         Cursor cursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         while (cursor.moveToNext()) {
+            long id = Long.valueOf(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID)));
             String fullName = cursor.getString(
                     cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            sayHello = new SayHello(fullName,
-                    phonenumber);
+            sayHello = new SayHello(id,fullName,phonenumber,false);
             sayHellos.add(sayHello);
         }
         cursor.close();

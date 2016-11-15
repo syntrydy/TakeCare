@@ -7,7 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,7 +18,7 @@ import com.it.mougang.gasmyr.takecare.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.List;
+import io.realm.RealmResults;
 
 /**
  * Created by gamyr on 10/28/16.
@@ -25,19 +26,19 @@ import java.util.List;
 
 public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyViewHolder> {
 
-    private List<SayHello> sayHellos;
+    private RealmResults<SayHello> realmResults;
     private Context context;
-    private final EventBus eventBus=EventBus.getDefault();
+    private final EventBus eventBus = EventBus.getDefault();
 
-    public SayHelloAdapter(List<SayHello> hellos, Context context) {
-        this.sayHellos = hellos;
+    public SayHelloAdapter(RealmResults<SayHello> hellos, Context context) {
+        this.realmResults = hellos;
         this.context = context;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView fullnameTv, phonenumberTv;
         public ImageView photoImageV;
-        public Button sayhelloButton, makebipmeButton;
+        public CheckBox checkBox;
         public CardView cardView;
 
         public MyViewHolder(@NonNull View view) {
@@ -46,8 +47,7 @@ public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyView
             fullnameTv = (TextView) view.findViewById(R.id.fullName);
             phonenumberTv = (TextView) view.findViewById(R.id.phonenumber);
             photoImageV = (ImageView) view.findViewById(R.id.photo);
-            sayhelloButton = (Button) view.findViewById(R.id.sayhellobutton);
-            makebipmeButton = (Button) view.findViewById(R.id.bipmebutton);
+            checkBox = (CheckBox) view.findViewById(R.id.checkBox);
         }
 
     }
@@ -62,21 +62,20 @@ public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
-        final SayHello sayHello = sayHellos.get(position);
+        final SayHello sayHello = realmResults.get(position);
         holder.fullnameTv.setText(sayHello.getFullName());
         Utils.roundedProfileImage(context, holder.photoImageV, R.drawable.profile00);
         holder.phonenumberTv.setText(sayHello.getPhonenumber());
-        holder.sayhelloButton.setOnClickListener(new View.OnClickListener() {
+        holder.checkBox.setChecked(sayHello.isSheduled());
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    sayHello.setStatus(true);
+                } else {
+                    sayHello.setStatus(false);
+                }
                 sayHello.setEventcode(3);
-                eventBus.post(sayHello);
-            }
-        });
-        holder.makebipmeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sayHello.setEventcode(4);
                 eventBus.post(sayHello);
             }
         });
@@ -98,19 +97,8 @@ public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyView
         });
     }
 
-
-    public void clear() {
-        sayHellos.clear();
-        notifyDataSetChanged();
-    }
-
-    public void addAll(@NonNull List<SayHello> hellos) {
-        sayHellos.addAll(hellos);
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemCount() {
-        return sayHellos.size();
+        return realmResults.size();
     }
 }

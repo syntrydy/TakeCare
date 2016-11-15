@@ -4,7 +4,7 @@
     <string name="birthday_notiftwo" />
     <string name="edit_birthday_text">edit birthday</string>
     <string name="birthday_notification_title">Look at your firends birthdays</string>
-    <string name="birthday_notification_textOne" />
-    <string name="birthday_notification_textTwo" />
+    <string name="birthday_notification_textOne">Hello Hello do you known that you have birthdays of </string>
+    <string name="birthday_notification_textTwo">of your friends that is comming soon. please dont miss the occasion</string>
     <string name="days_text">days</string>
 </resources>

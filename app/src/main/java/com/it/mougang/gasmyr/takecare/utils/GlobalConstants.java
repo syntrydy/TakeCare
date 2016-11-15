@@ -58,5 +58,5 @@ public class GlobalConstants {
     public static final String BIRTHDAY_NUMBER="birthdaynumber";
     public static final String BIRTHDAY_REMAINING_DAYS="birthdayremainingdays";
     public static final String BIRTHDAY_ID="birthdayid";
-    public static final String BIRTHDAY_MODEL_ID="birthdaymodelid";
+    public static final String BIRTHDAY_MESSAGE_TO_SEND="birthdaymessagetosend";
 }

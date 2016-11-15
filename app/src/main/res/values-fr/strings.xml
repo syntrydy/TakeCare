@@ -96,7 +96,7 @@
     <string name="title_activity_birthday_detail"></string>
     <string name="edit_birthday_text">Modifier</string>
     <string name="birthday_notification_title">Look at your firends birthdays</string>
-    <string name="birthday_notification_textOne" />
-    <string name="birthday_notification_textTwo" />
+    <string name="birthday_notification_textOne">Salut salut l\'anniversaire de </string>
+    <string name="birthday_notification_textTwo">de vos connaissances est proche.</string>
     <string name="days_text">days</string>
 </resources>

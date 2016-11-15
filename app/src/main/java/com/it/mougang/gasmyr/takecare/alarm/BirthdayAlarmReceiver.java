@@ -72,6 +72,9 @@ public class BirthdayAlarmReceiver extends WakefulBroadcastReceiver {
         builder.setContentTitle(context.getString(R.string.birthday_notification_title));
         builder.setContentText(context.getString(R.string.birthday_notification_textOne) + numberOfBirthdays + context.getString(R.string.birthday_notification_textTwo));
         builder.setSound(Utils.getDefaultNotificationSoundUri());
+        builder.setAutoCancel(true);
+        builder.setWhen(new Date().getTime());
+        builder.setTicker(context.getResources().getString(R.string.app_tab_title_birtdays));
 
         Intent intent = new Intent(context, BirthdayDetailActivity.class);
         intent.putExtra(GlobalConstants.BIRTHDAY_DATE, dateFormat.format(birthday.getBirthdate()));
