@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.it.mougang.gasmyr.takecare.R;
-import com.it.mougang.gasmyr.takecare.Realm.RealmBirthdayController;
+import com.it.mougang.gasmyr.takecare.Realm.RealmApplicationController;
 import com.it.mougang.gasmyr.takecare.adapters.SayHelloAdapter;
 import com.it.mougang.gasmyr.takecare.domain.SayHello;
 
@@ -52,7 +52,7 @@ public class SayHelloFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         myRecyclerView.setLayoutManager(layoutManager);
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        sayHellos = RealmBirthdayController.with(this).getAllSayHelloAsync();
+        sayHellos = RealmApplicationController.with(this).getAllSayHelloAsync();
         adapter = new SayHelloAdapter(sayHellos, getActivity().getApplicationContext());
         sayHellos.addChangeListener(new RealmChangeListener<RealmResults<SayHello>>() {
             @Override
@@ -78,7 +78,7 @@ public class SayHelloFragment extends Fragment {
     }
 
     private void handleRowChecked(SayHello sayHello,boolean status) {
-        RealmBirthdayController.with(getActivity()).updateSayHello(sayHello, status);
+        RealmApplicationController.with(getActivity()).updateSayHello(sayHello, status);
     }
 
     @Override

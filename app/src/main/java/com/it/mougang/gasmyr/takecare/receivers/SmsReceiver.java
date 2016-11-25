@@ -23,28 +23,26 @@ public class SmsReceiver extends BroadcastReceiver {
     public static final String ANDROID_PROVIDER_TELEPHONY_SMS_SENT = "android.provider.Telephony.SMS_SENT";
     public static final String FORMAT = "3gpp";
     public static final String PDUS = "pdus";
-    private static boolean incomingSmsSpeakerIsEnable = false;
-    private static boolean incomingSmsSummarySpeakerIsEnable = false;
-    private static boolean incomingSmsBodySpeakerIsEnable = false;
-    private static boolean canUseSpeakerFeature = false;
+    private static boolean canSpeakWhenNewIncomingSmsIsDetected = false;
+    private static boolean speakJustTheSmsSummary = false;
+    private static boolean canReplyToNewSmsWhenPhoneOwnerIsBusy = false;
+    private static boolean speakerIsOn = false;
+
+
+    private static boolean hasSpeakerFeature = false;
     private static SharedPreferences sharedPreferences;
     private static SharedPreferences globalPreferences;
-    String SMS_SENDER = "";
-    String SMS_BODY = "";
-    String SMS_EmailBODY = "";
-    String SMS_EmailFROM = "";
-    String SMS_DISPLAYBODY = "";
-    String SMS_PSEUDO_SUBJECT = "";
-    String SMS_ServiceCenterAddress = "";
+    String SMS_SENDER;
+    String SMS_SENDER_NAME;
+    String SMS_BODY;
     @Nullable
-    private String messageBody = "";
+    private String SMS_SPEAKER_CONTENT_MESSAGE;
     @Nullable
-    private String messageSummary = "";
+    private String SMS_SPEAKER_SUMMARY_MESSAGE;
     @Nullable
-    private String userName = "";
-    private String fullMessage = "";
-    private boolean responderIsEnable;
-    private String reponderMessage="";
+    private String OWNER_NAME;
+    private String FULL_MESSAGE;
+    private String SMS_RESPONDER_MESSAGE;
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
@@ -63,22 +61,12 @@ public class SmsReceiver extends BroadcastReceiver {
                     }
                     SMS_BODY += messages[i].getMessageBody();
                     SMS_SENDER += messages[i].getOriginatingAddress();
-                    SMS_SENDER = Utils.getContactName(context, SMS_SENDER);
-                    SMS_DISPLAYBODY += messages[i].getDisplayMessageBody();
-                    SMS_PSEUDO_SUBJECT += messages[i].getPseudoSubject();
-                    SMS_ServiceCenterAddress = messages[i].getServiceCenterAddress();
-                    if (messages[i].isEmail()) {
-                        SMS_EmailBODY = messages[i].getEmailBody();
-                        SMS_EmailFROM = messages[i].getEmailFrom();
-                    }
+                    SMS_SENDER_NAME = Utils.getContactName(context, SMS_SENDER);
                 }
                 if (intent.getAction().equals(ANDROID_PROVIDER_TELEPHONY_SMS_RECEIVED)) {
                     if (SMS_BODY.length() >= 2) {
-                        manage_incoming_sms_speaker(context);
-                        if(responderIsEnable){
-                            reponderMessage="Salut"+SMS_SENDER+" "+reponderMessage+" @autocompute "+new Date().getTime();
-                            Utils.sendNewSms(reponderMessage,SMS_SENDER);
-                        }
+                        triggeSmsSpeaker(context);
+                        handleSmsResponder();
                     }
                 }
                 if (intent.getAction().equals(ANDROID_PROVIDER_TELEPHONY_SMS_SENT)) {
@@ -91,47 +79,52 @@ public class SmsReceiver extends BroadcastReceiver {
         }
     }
 
-    private void manage_incoming_sms_speaker(@NonNull Context context) {
-        if (canUseSpeakerFeature && incomingSmsSpeakerIsEnable) {
-            if (incomingSmsSummarySpeakerIsEnable &&
-                    !incomingSmsBodySpeakerIsEnable) {
-                fullMessage = messageSummary.replace("{name}", userName);
-                fullMessage = fullMessage.replace("{sname}", SMS_SENDER);
+    private void handleSmsResponder() {
+        if (canReplyToNewSmsWhenPhoneOwnerIsBusy) {
+            SMS_RESPONDER_MESSAGE = "Salut" + SMS_SENDER + " " + SMS_RESPONDER_MESSAGE + " @autocompute " + new Date().getTime();
+            Utils.sendNewSms(SMS_RESPONDER_MESSAGE, SMS_SENDER);
+        }
+    }
+
+    private void triggeSmsSpeaker(@NonNull Context context) {
+        if (hasSpeakerFeature && speakerIsOn && canSpeakWhenNewIncomingSmsIsDetected) {
+            if (speakJustTheSmsSummary) {
+                FULL_MESSAGE = SMS_SPEAKER_SUMMARY_MESSAGE.replace("{name}", OWNER_NAME);
+                FULL_MESSAGE = FULL_MESSAGE.replace("{sname}", SMS_SENDER);
+            } else {
+                FULL_MESSAGE = SMS_SPEAKER_CONTENT_MESSAGE.replace("{name}", OWNER_NAME);
+                FULL_MESSAGE = FULL_MESSAGE.replace("{sname}", SMS_SENDER);
+                FULL_MESSAGE = FULL_MESSAGE.replace("{message}", SMS_BODY);
             }
-            if ((incomingSmsSpeakerIsEnable && incomingSmsBodySpeakerIsEnable) ||
-                    (!incomingSmsSpeakerIsEnable && incomingSmsBodySpeakerIsEnable)) {
-                fullMessage = messageBody.replace("{name}", userName);
-                fullMessage = fullMessage.replace("{sname}", SMS_SENDER);
-                fullMessage = fullMessage.replace("{message}", SMS_BODY);
-            }
-            startSpeakerService(context, fullMessage);
+            startSpeakerService(context, FULL_MESSAGE);
         }
     }
 
     private void startSpeakerService(@NonNull Context context, String message) {
         Intent speakerServiceIntent = new Intent(context, SpeechService.class);
-        speakerServiceIntent.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_Message, message);
-        speakerServiceIntent.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_TARGET, false);
+        speakerServiceIntent.putExtra(GlobalConstants.SPEAKER_SERVICE_MESSAGE, message);
+        speakerServiceIntent.putExtra(GlobalConstants.SPEAKER_SERVICE_TARGET, false);
         context.startService(speakerServiceIntent);
     }
 
     private void init(@NonNull Context context) {
         sharedPreferences = context.getSharedPreferences(
-                GlobalConstants.TAKECARE_SHARE_PRFERENCE, Context.MODE_PRIVATE);
+                GlobalConstants.APPLICATION_SHAREPRFERENCE, Context.MODE_PRIVATE);
         globalPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        incomingSmsSpeakerIsEnable = globalPreferences.getBoolean(
-                GlobalConstants.TAKECARE_ENABLE_INCOMING_SMS_SPEAKER, false);
-        incomingSmsSummarySpeakerIsEnable = globalPreferences.getBoolean(
-                GlobalConstants.TAKECARE_ENABLE_INCOMING_SMS_SUMMARY_SPEAKER, false);
-        incomingSmsBodySpeakerIsEnable = globalPreferences.getBoolean(
-                GlobalConstants.TAKECARE_ENABLE_INCOMING_SMS_BODY_SPEAKER, false);
-        canUseSpeakerFeature = sharedPreferences.getBoolean(
-                GlobalConstants.TAKECARE_CAN_USE_SPEAKER_FEATURE, false);
-        reponderMessage=globalPreferences.getString(GlobalConstants.TAKECARE_SMS_RESPONDER_MESSAGE,"@compute");
-        responderIsEnable=globalPreferences.getBoolean(GlobalConstants.TAKECARE_SMS_RESPONDER,false);
-        messageBody = globalPreferences.getString(GlobalConstants.TAKECARE_SMS_BODY_MODEL_SPEAKER, "");
-        messageSummary = globalPreferences.getString(GlobalConstants.TAKECARE_SMS_SUMMARY_MODEL_SPEAKER, "");
-        userName = globalPreferences.getString(GlobalConstants.TAKECARE_USER_DEFINE_NAME, "");
+        canSpeakWhenNewIncomingSmsIsDetected = globalPreferences.getBoolean(
+                GlobalConstants.APPLICATION_SPEAKER_CAN_SPEAK_WHEN_NEW_INCOMING_SMS_IS_DETECTED, false);
+        speakJustTheSmsSummary = globalPreferences.getBoolean(
+                GlobalConstants.APPLICATION_SPEAKER_SMS_CAN_READ_JUST_THE_SUMMARY, false);
+        hasSpeakerFeature = sharedPreferences.getBoolean(
+                GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, false);
+        canReplyToNewSmsWhenPhoneOwnerIsBusy = globalPreferences.
+                getBoolean(GlobalConstants.APPLICATION_SMS_RESPONDER_CAN_REPLY_ON_NEW_SMS, false);
+        speakerIsOn=globalPreferences.getBoolean(GlobalConstants.APPLICATION_SPEAKER_IS_ENABLED,false);
+        SMS_RESPONDER_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_SMS_RESPONDER_DEFINED_MESSAGE, "");
+        SMS_SPEAKER_CONTENT_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_SPEAKER_SMS_CONTENT_DEFINED_MODEL, "");
+        SMS_SPEAKER_SUMMARY_MESSAGE =
+                globalPreferences.getString(GlobalConstants.APPLICATION_SPEAKER_SMS_SUMMARY_DEFINED_MODEL, "");
+        OWNER_NAME = globalPreferences.getString(GlobalConstants.APPLICATION_PHONE_OWNER_NAME, "");
     }
 
 

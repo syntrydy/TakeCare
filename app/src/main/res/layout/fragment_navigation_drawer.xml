@@ -43,11 +43,5 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="#FFFFFF" />
     </RelativeLayout>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/myDrawerList"
-        android:layout_width="match_parent"
-        android:background="@color/colorPrimary"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"></android.support.v7.widget.RecyclerView>
 </LinearLayout>
 

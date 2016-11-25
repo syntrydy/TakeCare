@@ -26,7 +26,7 @@ public class BirthdayNotificationService extends IntentService {
         if (intent != null) {
             realmResults = Realm.getDefaultInstance().where(Birthday.class).findAll();
             for (Birthday birthday : realmResults) {
-                int remaingdays = Math.abs(Utils.daysBetweenUsingJoda(birthday.getBirthdate(),new Date()));
+                int remaingdays = birthday.getRemainingsDays();
                 if(remaingdays<=5){
                     notifyForBirthdayWith(birthday);
                 }

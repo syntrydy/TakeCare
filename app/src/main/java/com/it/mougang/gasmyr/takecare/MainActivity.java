@@ -1,14 +1,15 @@
 package com.it.mougang.gasmyr.takecare;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -23,18 +24,19 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.it.mougang.gasmyr.takecare.Realm.RealmBirthdayController;
+import com.it.mougang.gasmyr.takecare.Realm.RealmApplicationController;
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
 import com.it.mougang.gasmyr.takecare.domain.SayHello;
+import com.it.mougang.gasmyr.takecare.utils.AlarmManagerUtils;
 import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
 import com.it.mougang.gasmyr.takecare.view.navigationdrawer.NavigationDrawerFragment;
 import com.it.mougang.gasmyr.takecare.view.sayhello.SayHelloFragment;
-import com.it.mougang.gasmyr.takecare.view.todo.TodosFragment;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -62,7 +64,39 @@ public class MainActivity extends AppCompatActivity {
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         floatingActionButton.setVisibility(View.INVISIBLE);
-        enableRuntimePermission();
+        //enableRuntimePermission();
+        requestAllPermissions();
+    }
+
+    private void requestAllPermissions() {
+        if(!Utils.hasM()){
+            spinner.setVisibility(View.VISIBLE);
+            if (sharedPreferences.getBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, true)) {
+                startNotificationAlrm();
+                startGreetingNotificationAlarm();
+                copyBirthdayDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
+                copySayHelloDataToRealm(Utils.getSayHelloList(getApplicationContext()));
+                editor = sharedPreferences.edit();
+                editor.putBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, false);
+                editor.putBoolean(GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, true);
+                editor.putString(GlobalConstants.APPLICATION_INSTALLATION_DATE,Utils.getFormatter().format(new Date()));
+                editor.commit();
+            }
+            initComponents();
+            spinner.setVisibility(View.GONE);
+        }else{
+            
+
+        }
+    }
+
+    private void startNotificationAlrm() {
+        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        AlarmManagerUtils.scheduleBirthdayAlarm(getApplicationContext(), alarm);
+    }
+    private void startGreetingNotificationAlarm() {
+        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        AlarmManagerUtils.GreetingAlarm(getApplicationContext(), alarm);
     }
 
     private void initComponents() {
@@ -73,12 +107,43 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(@NonNull View view) {
-                Snackbar.make(view, "works well", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
             }
         });
     }
 
+    private void enableRuntimePermission() {
+        if (Utils.hasM() && !Utils.isContactsPermissionIsGranted(getApplicationContext())) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.READ_CONTACTS)) {
+                Toast.makeText(getApplicationContext(), "We need your permissions to access contacts", Toast.LENGTH_LONG).show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+            }
+        } else {
+            spinner.setVisibility(View.VISIBLE);
+            if (sharedPreferences.getBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, true)) {
+                startNotificationAlrm();
+                startGreetingNotificationAlarm();
+                copyBirthdayDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
+                copySayHelloDataToRealm(Utils.getSayHelloList(getApplicationContext()));
+                editor = sharedPreferences.edit();
+                editor.putBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, false);
+                editor.putBoolean(GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, true);
+                editor.putString(GlobalConstants.APPLICATION_INSTALLATION_DATE,Utils.getFormatter().format(new Date()));
+                editor.commit();
+            }
+            initComponents();
+            spinner.setVisibility(View.GONE);
+        }
+
+    }
+
+    private void setupSharepref() {
+        sharedPreferences = getSharedPreferences(GlobalConstants.APPLICATION_SHAREPRFERENCE, MODE_PRIVATE);
+    }
     private void setupApplicationViewPager() {
         pagerItemAdapter = new FragmentPagerItemAdapter(
                 getSupportFragmentManager(), FragmentPagerItems.with(this)
@@ -110,16 +175,10 @@ public class MainActivity extends AppCompatActivity {
                 Fragment currentFragment = pagerItemAdapter.getItem(position);
                 if (currentFragment instanceof MainActivityFragment) {
                     floatingActionButton.setVisibility(View.INVISIBLE);
-                } else if (currentFragment instanceof TodosFragment) {
-                    floatingActionButton.setVisibility(View.VISIBLE);
                 }
                 else if (currentFragment instanceof SayHelloFragment) {
                     floatingActionButton.setVisibility(View.VISIBLE);
                     floatingActionButton.setImageResource(R.drawable.ic_settings_applications_white_24dp);
-                }
-
-                else {
-                    floatingActionButton.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -130,45 +189,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void enableRuntimePermission() {
-        if (Utils.hasM() && !Utils.isContactsPermissionIsGranted(getApplicationContext())) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.READ_CONTACTS)) {
-                Toast.makeText(getApplicationContext(), "We need your permissions to access contacts", Toast.LENGTH_LONG).show();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{
-                        Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-            }
-        } else {
-            spinner.setVisibility(View.VISIBLE);
-            if (sharedPreferences.getBoolean(GlobalConstants.ASSISTME_IS_FISRT_LAUNCH, true)) {
-                copyDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
-                copyHellosToRealm(Utils.getSayHelloList(getApplicationContext()));
-                editor = sharedPreferences.edit();
-                editor.putBoolean(GlobalConstants.ASSISTME_IS_FISRT_LAUNCH, false);
-                editor.commit();
-            }
-            initComponents();
-            spinner.setVisibility(View.GONE);
-        }
-
-    }
-
-    private void setupSharepref() {
-        sharedPreferences = getSharedPreferences(GlobalConstants.TAKECARE_SHARE_PRFERENCE, MODE_PRIVATE);
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
         final SearchView searchView = (SearchView)
                 MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
         return true;
     }
 
@@ -190,11 +218,15 @@ public class MainActivity extends AppCompatActivity {
                 if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
                     spinner.setVisibility(View.VISIBLE);
                     MyApplication.getInstance().setInfos(Utils.getTelephonyInfos(getApplicationContext()));
-                    if (sharedPreferences.getBoolean(GlobalConstants.ASSISTME_IS_FISRT_LAUNCH, true)) {
-                        copyDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
-                        copyHellosToRealm(Utils.getSayHelloList(getApplicationContext()));
+                    if (sharedPreferences.getBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, true)) {
+                        startNotificationAlrm();
+                        startGreetingNotificationAlarm();
+                        copyBirthdayDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
+                        copySayHelloDataToRealm(Utils.getSayHelloList(getApplicationContext()));
                         editor = sharedPreferences.edit();
-                        editor.putBoolean(GlobalConstants.ASSISTME_IS_FISRT_LAUNCH, false);
+                        editor.putBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, false);
+                        editor.putBoolean(GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, true);
+                        editor.putString(GlobalConstants.APPLICATION_INSTALLATION_DATE,Utils.getFormatter().format(new Date()));
                         editor.apply();
                     }
                     initComponents();
@@ -213,12 +245,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void copyDataToRealm(List<Birthday> birthdays) {
-        RealmBirthdayController.with(this).copyDataToRealm(birthdays);
+    private void copyBirthdayDataToRealm(List<Birthday> birthdays) {
+        RealmApplicationController.with(this).copyDataToRealm(birthdays);
     }
 
-    private void copyHellosToRealm(List<SayHello> hellos) {
-        RealmBirthdayController.with(this).copyHellosToRealm(hellos);
+    private void copySayHelloDataToRealm(List<SayHello> hellos) {
+        RealmApplicationController.with(this).copyHellosToRealm(hellos);
     }
 
 }

@@ -83,15 +83,15 @@ public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyView
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sayHello.setEventcode(1);
-                eventBus.post(sayHello);
+                //sayHello.setEventcode(1);
+                //eventBus.post(sayHello);
             }
         });
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                sayHello.setEventcode(2);
-                eventBus.post(sayHello);
+                //sayHello.setEventcode(2);
+                //eventBus.post(sayHello);
                 return true;
             }
         });

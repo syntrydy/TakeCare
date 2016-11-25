@@ -5,6 +5,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -24,27 +25,23 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
-import android.text.format.DateUtils;
 import android.util.Patterns;
 import android.widget.ImageView;
 
-import com.it.mougang.gasmyr.takecare.R;
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
 import com.it.mougang.gasmyr.takecare.domain.SayHello;
+import com.it.mougang.gasmyr.takecare.service.SpeechService;
 
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.regex.Pattern;
 
 /**
@@ -52,16 +49,6 @@ import java.util.regex.Pattern;
  */
 
 public class Utils {
-
-    public static Date getNextYear(@NonNull Date date) {
-        LocalDate currentDate = LocalDate.fromDateFields(date);
-        return currentDate.plusYears(1).toDate();
-    }
-
-    public static int daysBetweenUsingJoda(@NonNull Date d1, @NonNull Date d2) {
-        return Math.abs(Days.daysBetween(new LocalDate(d1.getTime()), new LocalDate(d2.getTime())).getDays());
-    }
-
 
     public static boolean isContactsPermissionIsGranted(@NonNull Context context) {
         int permissionCheck = ContextCompat.checkSelfPermission(context,
@@ -85,7 +72,7 @@ public class Utils {
             String fullName = cursor.getString(
                     cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            birthday = new Birthday(id, fullName, phonenumber, Utils.getDefaultDate(),false);
+            birthday = new Birthday(id, fullName, phonenumber, Utils.getDefaultDate(), false);
             birthdays.add(birthday);
         }
         cursor.close();
@@ -98,7 +85,7 @@ public class Utils {
     }
 
     public static Date getDefaultDate() {
-        Date date = new Date(1920, 7, 2);
+        Date date = new Date(1970, 0, 1);
         String res = getDateFormatter().format(date);
         try {
             return getDateFormatter().parse(res);
@@ -117,7 +104,7 @@ public class Utils {
             String fullName = cursor.getString(
                     cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            sayHello = new SayHello(id,fullName,phonenumber,false);
+            sayHello = new SayHello(id, fullName, phonenumber, false);
             sayHellos.add(sayHello);
         }
         cursor.close();
@@ -126,6 +113,12 @@ public class Utils {
 
     public static void roundedProfileImage(@NonNull Context context, @NonNull ImageView imageView, int resourceId) {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
+        RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
+        rounded.setCornerRadius(bitmap.getWidth());
+        imageView.setImageDrawable(rounded);
+    }
+
+    public static void roundedBitmap(@NonNull Context context, @NonNull ImageView imageView, Bitmap bitmap) {
         RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
         rounded.setCornerRadius(bitmap.getWidth());
         imageView.setImageDrawable(rounded);
@@ -175,33 +168,6 @@ public class Utils {
         return Typeface.createFromAsset(context.getAssets(), "fonts/OpenRegular.ttf");
     }
 
-    @NonNull
-    public static String getCurrentUserOsVersion() {
-        int buildVersion = Build.VERSION.SDK_INT;
-        String result = "UNKNOWN";
-        if (buildVersion == Build.VERSION_CODES.KITKAT || buildVersion == Build.VERSION_CODES.KITKAT_WATCH) {
-            result = "KITKAT:" + buildVersion;
-        }
-        if (buildVersion == Build.VERSION_CODES.LOLLIPOP) {
-            result = "LOLLIPOP:" + buildVersion;
-        }
-        if (buildVersion == Build.VERSION_CODES.JELLY_BEAN ||
-                buildVersion == Build.VERSION_CODES.JELLY_BEAN_MR1 ||
-                buildVersion == Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            result = "JELLY_BEAN:" + buildVersion;
-        }
-        if (buildVersion == Build.VERSION_CODES.M) {
-            result = "MASHMALLOP:" + buildVersion;
-        }
-        if (buildVersion == Build.VERSION_CODES.GINGERBREAD) {
-            result = "GINGERBREAD:" + buildVersion;
-        }
-        if (buildVersion == Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            result = "ICE_CREAM_SANDWICH:" + buildVersion;
-        }
-        return result;
-    }
-
     public static boolean canSendSmsInPromisiousMode() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT;
     }
@@ -240,27 +206,18 @@ public class Utils {
         if (isTelephonyPermissionIsGranted(context)) {
             String phoneNumber = telephonyManager.getLine1Number();
             if (phoneNumber == null || phoneNumber.isEmpty()) {
-                infos.put(GlobalConstants.ASSISTME_TELEPHONY_PHONENUMBER, "UNKNOWN");
+                infos.put(GlobalConstants.APPLICATION_USER_PHONENUMBER, "UNKNOWN");
             } else {
-                infos.put(GlobalConstants.ASSISTME_TELEPHONY_PHONENUMBER, phoneNumber);
+                infos.put(GlobalConstants.APPLICATION_USER_PHONENUMBER, phoneNumber);
             }
-            infos.put(GlobalConstants.ASSISTME_TELEPHONY_DEVICEID, telephonyManager.getDeviceId());
-            infos.put(GlobalConstants.ASSISTME_TELEPHONY_OPERATORNAME, telephonyManager.getNetworkOperatorName());
-            infos.put(GlobalConstants.ASSISTME_TELEPHONY_OPERATOR, telephonyManager.getNetworkOperator());
-            infos.put(GlobalConstants.ASSISTME_TELEPHONY_NETWORKTYPE, "" + telephonyManager.getNetworkType());
-            infos.put(GlobalConstants.ASSISTME_TELEPHONY_SERIALNUMBER, telephonyManager.getSimSerialNumber());
-            infos.put(GlobalConstants.ASSISTME_TELEPHONY_NETWORKCOUNTRYISO, telephonyManager.getNetworkCountryIso());
-            infos.put(GlobalConstants.ASSISTME_TELEPHONY_SIMCOUNTRYISO, telephonyManager.getSimCountryIso());
-            infos.put(GlobalConstants.ASSISTME_TELEPHONY_SIMOPERATOR, telephonyManager.getSimOperator());
-            infos.put(GlobalConstants.ASSISTME_TELEPHONY_SIMOPERATORNAME, telephonyManager.getSimOperatorName());
-
-
+            infos.put(GlobalConstants.APPLICATION_USER_DEVICE_ID, telephonyManager.getDeviceId());
+            infos.put(GlobalConstants.APPLICATION_USER_OPERATOR_NAME, telephonyManager.getNetworkOperatorName());
+            infos.put(GlobalConstants.APPLICATION_USER_NETWORK_TYPE, "" + telephonyManager.getNetworkType());
+            infos.put(GlobalConstants.APPLICATION_USER_SERIAL_NUMBER, telephonyManager.getSimSerialNumber());
+            infos.put(GlobalConstants.APPLICATION_USER_SIM_NAME, telephonyManager.getSimOperatorName());
         }
-        infos.put(GlobalConstants.TAKECARE_USER_OS_VERSION, getCurrentUserOsVersion());
-        infos.put(GlobalConstants.TAKECARE_USER_DEFAULT_LANGUAGE, Locale.getDefault().getDisplayLanguage());
-        infos.put(GlobalConstants.TAKECARE_USER_APPINSTALLATION_DATE, getFormatter().format(new Date()).toString());
-        infos.put(GlobalConstants.TAKECARE_USER_Email, getUserEmail(context));
-        infos.put(GlobalConstants.TAKECARE_USER_NAME, getUserEmail(context).split("@")[0]);
+        infos.put(GlobalConstants.APPLICATION_PHONE_OWNER_EMAIL, getUserEmail(context));
+        infos.put(GlobalConstants.APPLICATION_PHONE_OWNER_NAME, getUserEmail(context).split("@")[0]);
         return infos;
     }
 
@@ -270,8 +227,8 @@ public class Utils {
         Pattern gmailPattern = Patterns.EMAIL_ADDRESS;
         if (hasM() && ActivityCompat.checkSelfPermission(context, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
             email = getEmail(context, email, gmailPattern);
-        } else if (!hasM()) {
-            getEmail(context, email, gmailPattern);
+        } else {
+            email = getEmail(context, email, gmailPattern);
         }
         if (email == null) {
             email = "unknown@gmail.com";
@@ -317,32 +274,17 @@ public class Utils {
         vibrator.vibrate(3000);
     }
 
-    public static Date adjustDate(@NonNull Date birthdate) {
-        int nbyears = Math.abs(birthdate.getYear() - new Date().getYear());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(birthdate);
-        calendar.add(Calendar.YEAR, nbyears);
-        return calendar.getTime();
-    }
 
     public static int getRandom(int n) {
-        Random random=new Random();
+        Random random = new Random();
         return random.nextInt(n);
     }
 
-    public static Date getNextBirthdate( Date birthdate) {
-        Date adjustDate = Utils.adjustDate(birthdate);
-        if (adjustDate.before(new Date())) {
-            return adjustDate;
-        } else {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(adjustDate);
-            calendar.add(Calendar.YEAR, 1);
-            return calendar.getTime();
-        }
+    public static void startSpeakerService(@NonNull Context context, String message) {
+        Intent speakerServiceIntent = new Intent(context, SpeechService.class);
+        speakerServiceIntent.putExtra(GlobalConstants.SPEAKER_SERVICE_MESSAGE, message);
+        speakerServiceIntent.putExtra(GlobalConstants.SPEAKER_SERVICE_TARGET, false);
+        context.startService(speakerServiceIntent);
     }
 
-    public static int  getRemainingsDays(Date birthdate) {
-        return daysBetweenUsingJoda(birthdate, new Date());
-    }
 }

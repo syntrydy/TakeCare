@@ -22,6 +22,8 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
+import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
+
 import java.util.List;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
@@ -97,11 +99,35 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
+                || GeneralPreferenceFragment.class.getName().equals(fragmentName)
                 || BirthdayPreferenceFragment.class.getName().equals(fragmentName)
                 || SMSPreferenceFragment.class.getName().equals(fragmentName)
                 || CALLPreferenceFragment.class.getName().equals(fragmentName)
                 || DataSyncPreferenceFragment.class.getName().equals(fragmentName);
     }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class GeneralPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_general);
+            setHasOptionsMenu(true);
+            bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_PHONE_OWNER_NAME));
+            bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_PHONE_OWNER_EMAIL));
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class BirthdayPreferenceFragment extends PreferenceFragment {
@@ -110,7 +136,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_birthday);
             setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference("birthday_notification_periods"));
+            bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_BIRTHDAY_NUMBER_OF_DAYS_BEFORE_NOTIFICATION));
         }
 
         @Override
@@ -131,9 +157,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_sms);
             setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference("assistMeSmsSummaryModelSpeaker"));
-            bindPreferenceSummaryToValue(findPreference("assistMeSmsBodyModelSpeaker"));
-            bindPreferenceSummaryToValue(findPreference("takecare_sms_responder_message"));
+            bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_SPEAKER_SMS_SUMMARY_DEFINED_MODEL));
+            bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_SPEAKER_SMS_CONTENT_DEFINED_MODEL));
+            bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_SMS_RESPONDER_DEFINED_MESSAGE));
         }
 
         @Override
@@ -154,7 +180,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_call);
             setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference("assistMeCallSummaryModelSpeaker"));
+            bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_SPEAKER_CALL_DEFINED_MODEL));
         }
 
         @Override
@@ -175,7 +201,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_data_sync);
             setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+            bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_CONTACT_SYNC_PERIOD));
         }
 
         @Override

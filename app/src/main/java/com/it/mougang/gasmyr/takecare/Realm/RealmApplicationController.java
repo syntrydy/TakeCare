@@ -25,11 +25,11 @@ import io.realm.Sort;
  * Created by gamyr on 10/30/16.
  */
 
-public class RealmBirthdayController {
-    private static RealmBirthdayController instance;
+public class RealmApplicationController {
+    private static RealmApplicationController instance;
     private Realm realm;
 
-    public RealmBirthdayController(Application application) {
+    public RealmApplicationController(Application application) {
         realm = Realm.getInstance(MyApplication.getInstance().realmConfiguration);
         realm.addChangeListener(new RealmChangeListener<Realm>() {
             @Override
@@ -40,28 +40,28 @@ public class RealmBirthdayController {
         setAutoRefresh();
     }
 
-    public static RealmBirthdayController with(@NonNull Fragment fragment) {
+    public static RealmApplicationController with(@NonNull Fragment fragment) {
         if (instance == null) {
-            instance = new RealmBirthdayController(fragment.getActivity().getApplication());
+            instance = new RealmApplicationController(fragment.getActivity().getApplication());
         }
         return instance;
     }
 
-    public static RealmBirthdayController with(@NonNull Activity activity) {
+    public static RealmApplicationController with(@NonNull Activity activity) {
         if (instance == null) {
-            instance = new RealmBirthdayController(activity.getApplication());
+            instance = new RealmApplicationController(activity.getApplication());
         }
         return instance;
     }
 
-    public static RealmBirthdayController with(Application application) {
+    public static RealmApplicationController with(Application application) {
         if (instance == null) {
-            instance = new RealmBirthdayController(application);
+            instance = new RealmApplicationController(application);
         }
         return instance;
     }
 
-    public static RealmBirthdayController getInstance() {
+    public static RealmApplicationController getInstance() {
         return instance;
     }
 
@@ -88,7 +88,7 @@ public class RealmBirthdayController {
             realm = Realm.getInstance(MyApplication.getInstance().realmConfiguration);
         }
         RealmResults<SayHello> result = realm.where(SayHello.class).findAllAsync();
-        return result.sort("isSheduled", Sort.DESCENDING);
+        return result.sort("isSheduled", Sort.ASCENDING);
     }
 
     public void updateBirthday(@NonNull Birthday birthday, Date date) {

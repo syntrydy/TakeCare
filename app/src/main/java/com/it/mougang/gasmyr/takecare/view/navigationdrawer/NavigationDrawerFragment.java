@@ -1,7 +1,12 @@
 package com.it.mougang.gasmyr.takecare.view.navigationdrawer;
 
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -9,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +27,14 @@ import com.it.mougang.gasmyr.takecare.R;
 import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class NavigationDrawerFragment extends Fragment {
+    private final static int PICK_IMAGE_REQUEST_CODE = 245;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+    ImageView drawerProfile;
 
 
     public NavigationDrawerFragment() {
@@ -35,37 +45,26 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-        setupRecyclerView(view);
-
         return view;
-    }
-
-    private void setupRecyclerView(@NonNull View view) {
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.myDrawerList);
-        NavigationDrawerAdapter adpater = new NavigationDrawerAdapter(getActivity(), NavigationDrawerItem.getData(getActivity().getApplicationContext()));
-        recyclerView.setAdapter(adpater);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     public void setUpDrawer(DrawerLayout drawerLayout, Toolbar toolbar) {
         mDrawerLayout = drawerLayout;
-        ImageView drawerProfile = (ImageView) mDrawerLayout.findViewById(R.id.userImage);
+        drawerProfile = (ImageView) mDrawerLayout.findViewById(R.id.userImage);
         drawerProfile.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(getActivity().getApplicationContext(),"change photo",Toast.LENGTH_SHORT).show();
+                loadImagePicker();
                 return true;
             }
         });
+        Utils.roundedProfileImage(getContext(), drawerProfile, R.drawable.profile05);
         TextView profileName = (TextView) mDrawerLayout.findViewById(R.id.profileName);
-        profileName.setTypeface(Utils.getCampagneFont(getActivity().getApplicationContext()));
+        profileName.setTypeface(Utils.getOpenItalicFont(getActivity().getApplicationContext()));
         TextView profileEmail = (TextView) mDrawerLayout.findViewById(R.id.profileEmail);
         profileEmail.setTypeface(Utils.getOpenItalicFont(getActivity().getApplicationContext()));
-        Utils.roundedProfileImage(getContext(), drawerProfile, R.drawable.profile05);
-        String username = MyApplication.getInstance().infos.get(GlobalConstants.TAKECARE_USER_NAME);
-        profileName.setText(username);
-        String email = MyApplication.getInstance().infos.get(GlobalConstants.TAKECARE_USER_Email);
-        profileEmail.setText(email);
+        profileName.setText(MyApplication.getInstance().infos.get(GlobalConstants.APPLICATION_PHONE_OWNER_NAME));
+        profileEmail.setText(MyApplication.getInstance().infos.get(GlobalConstants.APPLICATION_PHONE_OWNER_EMAIL));
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -91,6 +90,41 @@ public class NavigationDrawerFragment extends Fragment {
                 mDrawerToggle.syncState();
             }
         });
+    }
+
+    private void loadImagePicker() {
+        Log.d("BIRTHDAY","start");
+        Intent imagePickerIntent = new Intent(Intent.ACTION_PICK);
+        imagePickerIntent.setType("image/*");
+        imagePickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+        if (Utils.hasM()) {
+            Intent intent = Intent.createChooser(imagePickerIntent, "Select a picture");
+            startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE);
+        } else {
+            startActivityForResult(imagePickerIntent, PICK_IMAGE_REQUEST_CODE);
+        }
+        Log.d("BIRTHDAY","end");
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("BIRTHDAY","hdhdhdhd");
+        if(resultCode== PICK_IMAGE_REQUEST_CODE && resultCode == RESULT_OK && data!=null && data.getData()!=null){
+            Uri uri=data.getData();
+
+            try{
+                Bitmap bitmap= MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),uri);
+                Log.d("BIRTHDAY",String.valueOf(bitmap));
+                Utils.roundedBitmap(getContext(),drawerProfile,bitmap);
+                drawerProfile.setImageBitmap(bitmap);
+
+            }catch (Exception e){
+
+            }
+
+        }
     }
 }
 

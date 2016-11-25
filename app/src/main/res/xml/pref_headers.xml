@@ -3,6 +3,10 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
+        android:fragment="com.it.mougang.gasmyr.takecare.SettingsActivity$GeneralPreferenceFragment"
+        android:icon="@drawable/ic_add_alert_black_24dp"
+        android:title="@string/pref_header_general" />
+    <header
         android:fragment="com.it.mougang.gasmyr.takecare.SettingsActivity$BirthdayPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/pref_header_birthday" />

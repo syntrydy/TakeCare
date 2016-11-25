@@ -8,16 +8,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.it.mougang.gasmyr.takecare.Realm.RealmBirthdayController;
+import com.it.mougang.gasmyr.takecare.Realm.RealmApplicationController;
 import com.it.mougang.gasmyr.takecare.adapters.BirthdayAdapter;
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
-import com.it.mougang.gasmyr.takecare.domain.BirthdayMessageModel;
 import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
 import com.it.mougang.gasmyr.takecare.utils.datepicker.DatePickerFragment;
@@ -61,7 +58,7 @@ public class MainActivityFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         myRecyclerView.setLayoutManager(layoutManager);
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        realmObjects = RealmBirthdayController.with(this).getAllBirthdaysAsync();
+        realmObjects = RealmApplicationController.with(this).getAllBirthdaysAsync();
         adapter = new BirthdayAdapter(realmObjects, getActivity().getApplicationContext());
         realmObjects.addChangeListener(new RealmChangeListener<RealmResults<Birthday>>() {
             @Override
@@ -92,17 +89,17 @@ public class MainActivityFragment extends Fragment {
     private void launchBirthdayDetail(Birthday currentBirthday) {
         Intent intent = new Intent(getActivity().getApplicationContext(), BirthdayDetailActivity.class);
         intent.putExtra(GlobalConstants.BIRTHDAY_DATE, formatter.format(currentBirthday.getBirthdate()));
-        intent.putExtra(GlobalConstants.BIRTHDAY_NEXT_DATE, formatter.format(Utils.getNextBirthdate(currentBirthday.getBirthdate())));
+        intent.putExtra(GlobalConstants.BIRTHDAY_NEXT_DATE, formatter.format(currentBirthday.getNextBirthDate()));
         intent.putExtra(GlobalConstants.BIRTHDAY_FULLNAME, currentBirthday.getFullName());
         intent.putExtra(GlobalConstants.BIRTHDAY_NUMBER, currentBirthday.getPhonenumber());
-        intent.putExtra(GlobalConstants.BIRTHDAY_REMAINING_DAYS, Utils.getRemainingsDays(currentBirthday.getBirthdate()));
+        intent.putExtra(GlobalConstants.BIRTHDAY_REMAINING_DAYS,currentBirthday.getRemainingsDays());
         intent.putExtra(GlobalConstants.BIRTHDAY_ID, String.valueOf(currentBirthday.getId()));
         getActivity().startActivity(intent);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBirthdatePicked(Date date) {
-        RealmBirthdayController.with(this).updateBirthday(currentBirthday, date);
+        RealmApplicationController.with(this).updateBirthday(currentBirthday, date);
         adapter.notifyDataSetChanged();
     }
 
@@ -127,7 +124,7 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        RealmBirthdayController.with(this).close();
+        RealmApplicationController.with(this).close();
         super.onDestroy();
     }
 

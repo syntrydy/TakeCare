@@ -1,37 +1,31 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <SwitchPreference
+        android:key="speaker_can_speak_when_new_sms"
         android:defaultValue="true"
-        android:key="assistMeEnableIncomingSmsSpeaker"
         android:summary="@string/settings_sms_enable_speaker"
         android:title="@string/settings_sms_enable_speaker_title" />
     <SwitchPreference
-        android:defaultValue="false"
-        android:dependency="assistMeEnableIncomingSmsSpeaker"
-        android:key="assistMeEnableIncomingSmsSummarySpeaker"
+        android:key="speaker-sms_can_read_just_sms_summary"
+        android:dependency="speaker_can_speak_when_new_sms"
+        android:defaultValue="true"
         android:summary="@string/settings_sms_summary"
         android:title="@string/settings_sms_summary_title" />
     <EditTextPreference
+        android:key="speaker-sms_summary_defined_model"
+        android:dependency="speaker-sms_can_read_just_sms_summary"
         android:capitalize="words"
         android:defaultValue="@string/settings_sms_summary_default_model"
-        android:dependency="assistMeEnableIncomingSmsSummarySpeaker"
         android:inputType="textCapWords"
-        android:key="assistMeSmsSummaryModelSpeaker"
         android:maxLines="5"
         android:selectAllOnFocus="true"
         android:singleLine="false"
         android:title="@string/settings_sms_summary_model_title" />
-    <SwitchPreference
-        android:defaultValue="false"
-        android:dependency="assistMeEnableIncomingSmsSpeaker"
-        android:key="assistMeEnableIncomingSmsBodySpeaker"
-        android:summary="@string/settings_sms_body"
-        android:title="@string/settings_sms_body_title" />
     <EditTextPreference
+        android:key="speaker-sms_content_defined_model"
+        android:dependency="speaker-sms_can_read_just_sms_summary"
         android:capitalize="words"
         android:defaultValue="@string/settings_sms_body_default_model"
-        android:dependency="assistMeEnableIncomingSmsBodySpeaker"
         android:inputType="textCapWords"
-        android:key="assistMeSmsBodyModelSpeaker"
         android:maxLines="5"
         android:selectAllOnFocus="true"
         android:singleLine="false"
@@ -39,16 +33,17 @@
 
 
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="takecare_sms_responder"
+        android:key="smsresponder_can_reply_on_new_sms"
+        android:defaultValue="false"
         android:summary="@string/settings_sms_enable_responder"
         android:title="@string/settings_sms_enable_responder_title" />
     <EditTextPreference
+        android:key="smsrespondermessage"
+        android:dependency="smsresponder_can_reply_on_new_sms"
         android:capitalize="words"
         android:defaultValue="@string/settings_sms_responder"
         android:inputType="textCapWords"
-        android:key="takecare_sms_responder_message"
-        android:maxLines="5"
+        android:maxLines="10"
         android:selectAllOnFocus="true"
         android:singleLine="false"
         android:title="@string/settings_sms_responder_title" />

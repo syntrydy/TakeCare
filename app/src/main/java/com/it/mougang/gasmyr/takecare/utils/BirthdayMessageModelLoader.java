@@ -2,7 +2,6 @@ package com.it.mougang.gasmyr.takecare.utils;
 
 import android.app.Activity;
 
-import com.it.mougang.gasmyr.takecare.Realm.RealmMessageModelController;
 import com.it.mougang.gasmyr.takecare.domain.BirthdayMessageModel;
 
 import java.util.ArrayList;
@@ -110,8 +109,6 @@ public class BirthdayMessageModelLoader {
 
         return results;
     }
-    public void loadMessages(Activity activity){
-        RealmMessageModelController.with(activity).copyDataToRealm(getData());
-    }
+
 
 }

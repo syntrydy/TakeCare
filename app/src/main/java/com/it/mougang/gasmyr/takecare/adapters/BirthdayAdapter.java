@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -36,6 +38,8 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
     private final EventBus eventBus = EventBus.getDefault();
     private RealmResults<Birthday> realmResults;
     private Context context;
+    private Animation animation;
+    int lastPosition = -1;
 
 
     public BirthdayAdapter(RealmResults<Birthday> realmResults, Context context) {
@@ -52,8 +56,27 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
         return new MyViewHolder(itemView);
     }
 
+
+    @Override
+    public void onViewDetachedFromWindow(MyViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.itemView.clearAnimation();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
+
+        if(position >lastPosition) {
+            animation = AnimationUtils.loadAnimation(context,
+                    R.anim.up_from_bottom);
+        }
+        else{
+            animation = AnimationUtils.loadAnimation(context,
+                    R.anim.from_top_to_bottom);
+        }
+        holder.itemView.startAnimation(animation);
+        lastPosition = position;
+
         final Birthday birthday = realmResults.get(position);
         holder.fullnameTv.setText(birthday.getFullName());
         Utils.roundedProfileImage(context, holder.photoImageV, R.drawable.profile02);
@@ -64,7 +87,7 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
             holder.setBirthdateButton.setEnabled(false);
             holder.checkBox.setChecked(false);
             holder.birthdayTv.setText(format.format(birthday.getBirthdate()));
-            holder.remainingdaysTv.setText(""+Utils.getRemainingsDays(birthday.getBirthdate()));
+            holder.remainingdaysTv.setText(""+birthday.getRemainingsDays());
         } else {
             holder.checkBox.setEnabled(false);
             holder.checkBox.setChecked(true);
@@ -142,5 +165,6 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
             checkBox = (CheckBox) view.findViewById(R.id.checkBox);
         }
     }
+
 
 }

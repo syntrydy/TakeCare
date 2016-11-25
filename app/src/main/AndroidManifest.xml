@@ -96,6 +96,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.it.mougang.gasmyr.takecare.MainActivity" />
         </activity>
+
+        <receiver
+            android:name=".receivers.GreetingAlarmReceiver"
+            android:enabled="true"
+            android:exported="false"></receiver>
     </application>
 
 </manifest>

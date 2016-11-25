@@ -33,8 +33,8 @@ public class SMSService extends IntentService {
 
     private void startSpeakerService(@NonNull Context context, String message) {
         Intent speakerServiceIntent = new Intent(context, SpeechService.class);
-        speakerServiceIntent.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_Message, message);
-        speakerServiceIntent.putExtra(GlobalConstants.TAKECARE_TEXTTOSPEECH_TARGET, false);
+        speakerServiceIntent.putExtra(GlobalConstants.SPEAKER_SERVICE_MESSAGE, message);
+        speakerServiceIntent.putExtra(GlobalConstants.SPEAKER_SERVICE_TARGET, false);
         context.startService(speakerServiceIntent);
     }
 

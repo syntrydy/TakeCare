@@ -6,57 +6,70 @@ package com.it.mougang.gasmyr.takecare.utils;
 
 public class GlobalConstants {
 
-    // Main constant
-    public static final String TAKECARE_SHARE_PRFERENCE = "com.it.mougang.gasmyr.takecare:36541991";
-    public static final String ASSISTME_IS_FISRT_LAUNCH = "assistMeIsFirstLaunch";
-    public static final String TAKECARE_CAN_USE_SPEAKER_FEATURE = "assistMeCanUseSpeakerFeature";
-
-    public static final String ASSISTME_ENABLE_BIRHDAY_NOTIFICATION_BY_SMS = "assistMeEnableBithdayNotificationBySms";
-
-    public static final String TAKECARE_ENABLE_INCOMING_CALL_SPEAKER = "assistMeEnableIncomingCallSpeaker";
-    public static final String TAKECARE_CALL_SUMMARY_MODEL_SPEAKER = "assistMeCallSummaryModelSpeaker";
-
-    public static final String TAKECARE_ENABLE_INCOMING_SMS_SPEAKER = "assistMeEnableIncomingSmsSpeaker";
-    public static final String TAKECARE_ENABLE_INCOMING_SMS_SUMMARY_SPEAKER = "assistMeEnableIncomingSmsSummarySpeaker";
-    public static final String TAKECARE_SMS_SUMMARY_MODEL_SPEAKER = "assistMeSmsSummaryModelSpeaker";
-    public static final String TAKECARE_ENABLE_INCOMING_SMS_BODY_SPEAKER = "assistMeEnableIncomingSmsBodySpeaker";
-    public static final String TAKECARE_SMS_BODY_MODEL_SPEAKER = "assistMeSmsBodyModelSpeaker";
+    //general constatnt
+    public static final String APPLICATION_SHAREPRFERENCE = "com.it.mougang.gasmyr.takecare:36541991";
+    public static final String APPLICATION_IS_FISRT_LAUNCH = "application-is_first_launch";
+    public static final String APPLICATION_HAS_SPEAKER_FEATURE = "application-has_speaker_feature";
+    public static final String APPLICATION_INSTALLATION_DATE = "application_installation_date";
 
 
-    public static final String ASSISTME_TELEPHONY_PHONENUMBER = "assistMeUserPhoneNumber";
-    public static final String ASSISTME_TELEPHONY_OPERATORNAME = "assistMeUserOperatorName";
-    public static final String ASSISTME_TELEPHONY_OPERATOR = "assistMeUserOperator";
-    public static final String ASSISTME_TELEPHONY_SIMOPERATOR = "assistMeUserSimOperator";
-    public static final String ASSISTME_TELEPHONY_SIMOPERATORNAME = "assistMeUserSimOperatorName";
-    public static final String ASSISTME_TELEPHONY_SERIALNUMBER = "assistMeUserSerialNumber";
-    public static final String ASSISTME_TELEPHONY_NETWORKTYPE = "assistMeUserNetworkType";
-    public static final String ASSISTME_TELEPHONY_DEVICEID = "assistMeUserDeviceId";
-    public static final String ASSISTME_TELEPHONY_NETWORKCOUNTRYISO = "assistMeUserNetworkCountryIso";
-    public static final String ASSISTME_TELEPHONY_SIMCOUNTRYISO = "assistMeUserNetworkSimIso";
+    // Birthday constant
+    public static final String APPLICATION_BIRTHDAY_CAN_SEND_BIRTHDAY_MESSAGE = "birthday-can_send_birthday_message";
+    public static final String APPLICATION_BIRTHDAY_NUMBER_OF_DAYS_BEFORE_NOTIFICATION = "birthday_periods";
+    public static final String APPLICATION_BIRTHDAY_NOTIFICATION_STATUS = "birthday_speaker_notification_status";
 
-    public static final String TAKECARE_USER_OS_VERSION = "assistMeUserOsVersion";
-    public static final String TAKECARE_USER_NAME = "assistMeUserName";
-    public static final String TAKECARE_USER_Email = "assistMeUserEmail";
-    public static final String TAKECARE_USER_DEFAULT_LANGUAGE = "assistMeUserDefaultLanguage";
-    public static final String TAKECARE_USER_APPINSTALLATION_DATE = "assistMeUserAppInstallationDate";
-
-    public static final String TAKECARE_USER_DEFINE_NAME = "assistMe_UserDefinedName";
-    public static final String ASSISTME_USER_DEFINE_PHONE = "assistMe_UserDefinedPhone";
+    //Speaker constant
+    public static final String APPLICATION_SPEAKER_IS_ENABLED = "speaker_is_enabled";
 
 
-    public static final String TAKECARE_TEXTTOSPEECH_Message = "assistTextToSpeechMessage";
-    public static final String TAKECARE_TEXTTOSPEECH_TARGET = "assistTextToSpeechTarget";
+    //CAll Speaker constant
+    public static final String APPLICATION_SPEAKER_CAN_SPEAK_WHEN_NEW_INCOMING_CALL_IS_DETECTED = "speaker_can_speak_when_new_call";
+    public static final String APPLICATION_SPEAKER_CALL_DEFINED_MODEL = "speaker-call_defined_model";
 
-    public static final String TAKECARE_BIRTHDAY_NOTIFICATIONS_PERIODS = "birthday_notification_periods";
+    //Sms Speaker constant
+    public static final String APPLICATION_SPEAKER_CAN_SPEAK_WHEN_NEW_INCOMING_SMS_IS_DETECTED = "speaker_can_speak_when_new_sms";
+    public static final String APPLICATION_SPEAKER_SMS_CAN_READ_JUST_THE_SUMMARY = "speaker-sms_can_read_just_sms_summary";
+    public static final String APPLICATION_SPEAKER_SMS_SUMMARY_DEFINED_MODEL = "speaker-sms_summary_defined_model";
+    public static final String APPLICATION_SPEAKER_SMS_CONTENT_DEFINED_MODEL = "speaker-sms_content_defined_model";
 
-    public static final String TAKECARE_SMS_RESPONDER = "takecare_sms_responder";
-    public static final String TAKECARE_SMS_RESPONDER_MESSAGE = "takecare_sms_responder_message";
+    //Sms responder constant
+    public static final String APPLICATION_SMS_RESPONDER_DEFINED_MESSAGE = "smsrespondermessage";
+    public static final String APPLICATION_SMS_RESPONDER_CAN_REPLY_ON_NEW_SMS = "smsresponder_can_reply_on_new_sms";
 
-    public static final String BIRTHDAY_DATE="birthdaydate";
-    public static final String BIRTHDAY_NEXT_DATE="birthdaynextdate";
-    public static final String BIRTHDAY_FULLNAME="birthdayfullname";
-    public static final String BIRTHDAY_NUMBER="birthdaynumber";
-    public static final String BIRTHDAY_REMAINING_DAYS="birthdayremainingdays";
-    public static final String BIRTHDAY_ID="birthdayid";
-    public static final String BIRTHDAY_MESSAGE_TO_SEND="birthdaymessagetosend";
+    //call responder constants
+    public static final String APPLICATION_CALL_RESPONDER_DEFINED_MESSAGE = "callrespondermessage";
+    public static final String APPLICATION_CALL_RESPONDER_CAN_REPLY_ON_NEW_CALL = "smsresponder_can_reply_on_new_call";
+
+
+    //current phone constants
+    public static final String APPLICATION_USER_PHONENUMBER = "application_user_phonenumber";
+    public static final String APPLICATION_USER_OPERATOR_NAME = "application_user_operator_name";
+    public static final String APPLICATION_USER_SIM_NAME = "application_user_sim_name";
+    public static final String APPLICATION_USER_SERIAL_NUMBER = "application_user_serial_number";
+    public static final String APPLICATION_USER_NETWORK_TYPE = "application_user_network_type";
+    public static final String APPLICATION_USER_DEVICE_ID = "application_user_device_id";
+
+
+    //current phone user constants
+    public static final String APPLICATION_PHONE_OWNER_NAME = "owner_name";
+    public static final String APPLICATION_PHONE_OWNER_EMAIL = "owner_email";
+
+
+    public static final String BIRTHDAY_DATE = "birthday_date";
+    public static final String BIRTHDAY_NEXT_DATE = "birthday_nextdate";
+    public static final String BIRTHDAY_FULLNAME = "birthday_fullname";
+    public static final String BIRTHDAY_NUMBER = "birthday_number";
+    public static final String BIRTHDAY_REMAINING_DAYS = "birthday_remainingdays";
+    public static final String BIRTHDAY_ID = "birthday_id";
+    public static final String BIRTHDAY_MESSAGE_MODEL = "birthdaymessage_model";
+
+
+    //speaker service extra
+    public static final String SPEAKER_SERVICE_MESSAGE = "speaker_service_message";
+    public static final String SPEAKER_SERVICE_TARGET = "speaker_service_target";
+
+    //contact sync
+    public static final String APPLICATION_CONTACT_SYNC_PERIOD = "application_contact_sync_period";
+
+
 }

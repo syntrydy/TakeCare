@@ -20,6 +20,9 @@
     <!-- Birthday settings -->
     <string name="pref_header_birthday">Birthday</string>
 
+    <!-- General settings -->
+    <string name="pref_header_general">General</string>
+
     <!-- SMS settings -->
     <string name="pref_header_sms">SMS</string>
     <string name="settings_sms_enable_speaker">Enable sms speaker</string>
@@ -95,7 +98,7 @@
     <string name="title_activity_birthday_detail"></string>
     <string name="edit_birthday_text">edit birthday</string>
     <string name="birthday_notification_title">Look at your firends birthdays</string>
-    <string name="birthday_notification_textOne"></string>
-    <string name="birthday_notification_textTwo"></string>
+    <string name="birthday_notification_textOne">Hello Hello do you known that you have birthdays of</string>
+    <string name="birthday_notification_textTwo">of your friends that is comming soon. please dont miss the occasion</string>
     <string name="days_text">days</string>
 </resources>

@@ -1,6 +1,12 @@
 package com.it.mougang.gasmyr.takecare.domain;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.it.mougang.gasmyr.takecare.utils.Utils;
+
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -96,6 +102,39 @@ public class Birthday extends RealmObject {
     public void setMessageModel(BirthdayMessageModel messageModel) {
         this.messageModel = messageModel;
     }
+
+    public Date getNextBirthDate(){
+        Log.d("BIRTHDAY","Next birthday");
+        Date date=improveDate();
+        Log.d("BIRTHDAY","improve date "+date);
+        if(date.before(new Date())){
+            Log.d("BIRTHDAY","is before");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.YEAR, 1);
+            return calendar.getTime();
+        }
+        else{
+            Log.d("BIRTHDAY","is not before");
+            return date;
+        }
+    }
+
+    private Date improveDate() {
+        int nbyears = Math.abs(birthdate.getYear() - new Date().getYear());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(birthdate);
+        calendar.add(Calendar.YEAR, nbyears);
+        return calendar.getTime();
+    }
+
+    public int  getRemainingsDays() {
+            return daysBetweenUsingJoda(getNextBirthDate(), new Date());
+    }
+    public static int daysBetweenUsingJoda(@NonNull Date d1, @NonNull Date d2) {
+        return Math.abs(Days.daysBetween(new LocalDate(d1.getTime()), new LocalDate(d2.getTime())).getDays());
+    }
+
     @Override
     public boolean equals(Object firstBirthday) {
         boolean resultValue = false;

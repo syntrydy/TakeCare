@@ -31,8 +31,8 @@ public class SpeechService extends Service implements TextToSpeech.OnInitListene
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
         handler.removeCallbacksAndMessages(null);
         Bundle data = intent.getExtras();
-        message = data.getString(GlobalConstants.TAKECARE_TEXTTOSPEECH_Message, message);
-        isCallMessage = data.getBoolean(GlobalConstants.TAKECARE_TEXTTOSPEECH_TARGET, false);
+        message = data.getString(GlobalConstants.SPEAKER_SERVICE_MESSAGE, message);
+        isCallMessage = data.getBoolean(GlobalConstants.SPEAKER_SERVICE_TARGET, false);
         if (isInit) {
             speak(isCallMessage);
         }
