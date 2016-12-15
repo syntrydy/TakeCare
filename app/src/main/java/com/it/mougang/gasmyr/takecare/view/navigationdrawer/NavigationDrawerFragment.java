@@ -2,13 +2,18 @@ package com.it.mougang.gasmyr.takecare.view.navigationdrawer;
 
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,22 +24,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.it.mougang.gasmyr.takecare.MainActivity;
 import com.it.mougang.gasmyr.takecare.MyApplication;
 import com.it.mougang.gasmyr.takecare.R;
+import com.it.mougang.gasmyr.takecare.imageutils.PickerBuilder;
 import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class NavigationDrawerFragment extends Fragment {
-    private final static int PICK_IMAGE_REQUEST_CODE = 245;
+    ImageView drawerProfile;
+    LinearLayout carocell;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-    ImageView drawerProfile;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private String currentUri;
 
 
     public NavigationDrawerFragment() {
@@ -51,6 +63,8 @@ public class NavigationDrawerFragment extends Fragment {
     public void setUpDrawer(DrawerLayout drawerLayout, Toolbar toolbar) {
         mDrawerLayout = drawerLayout;
         drawerProfile = (ImageView) mDrawerLayout.findViewById(R.id.userImage);
+        carocell=(LinearLayout)mDrawerLayout.findViewById(R.id.carocell);
+        carocell.setBackgroundResource(Utils.getResourceID("a"+Utils.getRandom(20),"drawable",getActivity().getApplicationContext()));
         drawerProfile.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -58,7 +72,14 @@ public class NavigationDrawerFragment extends Fragment {
                 return true;
             }
         });
-        Utils.roundedProfileImage(getContext(), drawerProfile, R.drawable.profile05);
+        init();
+        if (currentUri == null) {
+            Utils.roundedProfileImage(getContext(), drawerProfile, R.drawable.profile05);
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(currentUri).getEncodedPath());
+            Utils.roundedBitmap(getContext(), drawerProfile, bitmap);
+        }
+
         TextView profileName = (TextView) mDrawerLayout.findViewById(R.id.profileName);
         profileName.setTypeface(Utils.getOpenItalicFont(getActivity().getApplicationContext()));
         TextView profileEmail = (TextView) mDrawerLayout.findViewById(R.id.profileEmail);
@@ -92,39 +113,29 @@ public class NavigationDrawerFragment extends Fragment {
         });
     }
 
+    private void init() {
+        sharedPreferences = getActivity().getSharedPreferences(GlobalConstants.APPLICATION_SHAREPRFERENCE, MODE_PRIVATE);
+        currentUri = sharedPreferences.getString(GlobalConstants.APPLICATION_PHOTO_URI, null);
+    }
+
     private void loadImagePicker() {
-        Log.d("BIRTHDAY","start");
-        Intent imagePickerIntent = new Intent(Intent.ACTION_PICK);
-        imagePickerIntent.setType("image/*");
-        imagePickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-        if (Utils.hasM()) {
-            Intent intent = Intent.createChooser(imagePickerIntent, "Select a picture");
-            startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE);
-        } else {
-            startActivityForResult(imagePickerIntent, PICK_IMAGE_REQUEST_CODE);
-        }
-        Log.d("BIRTHDAY","end");
-
+        new PickerBuilder(getActivity(), PickerBuilder.SELECT_FROM_GALLERY)
+                .setOnImageReceivedListener(new PickerBuilder.onImageReceivedListener() {
+                    @Override
+                    public void onImageReceived(Uri imageUri) {
+                        editor = sharedPreferences.edit();
+                        editor.putString(GlobalConstants.APPLICATION_PHOTO_URI, imageUri.toString());
+                        editor.apply();
+                        Bitmap bitmap = BitmapFactory.decodeFile(imageUri.getEncodedPath());
+                        Utils.roundedBitmap(getContext(), drawerProfile, bitmap);
+                    }
+                })
+                .setImageName("Photo")
+                .setImageFolderName(getActivity().getResources().getString(R.string.app_name))
+                .withTimeStamp(true)
+                .setCropScreenColor(Color.CYAN)
+                .start();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("BIRTHDAY","hdhdhdhd");
-        if(resultCode== PICK_IMAGE_REQUEST_CODE && resultCode == RESULT_OK && data!=null && data.getData()!=null){
-            Uri uri=data.getData();
-
-            try{
-                Bitmap bitmap= MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),uri);
-                Log.d("BIRTHDAY",String.valueOf(bitmap));
-                Utils.roundedBitmap(getContext(),drawerProfile,bitmap);
-                drawerProfile.setImageBitmap(bitmap);
-
-            }catch (Exception e){
-
-            }
-
-        }
-    }
 }
 

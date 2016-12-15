@@ -21,7 +21,7 @@ public class AlarmManagerUtils {
             final PendingIntent pIntent = PendingIntent.getBroadcast(context, BirthdayAlarmReceiver.REQUEST_CODE,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
             long firstMillis = System.currentTimeMillis();
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstMillis, AlarmManager.INTERVAL_HOUR, pIntent);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstMillis, AlarmManager.INTERVAL_HALF_DAY, pIntent);
         }
     }
 
@@ -36,17 +36,17 @@ public class AlarmManagerUtils {
 
     public static void GreetingAlarm(Context context, @NonNull AlarmManager alarmManager) {
         if (alarmManager != null) {
-            Intent intent = new Intent(context, BirthdayAlarmReceiver.class);
+            Intent intent = new Intent(context, GreetingAlarmReceiver.class);
             final PendingIntent pIntent = PendingIntent.getBroadcast(context, GreetingAlarmReceiver.REQUEST_CODE,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
             long firstMillis = System.currentTimeMillis();
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstMillis, AlarmManager.INTERVAL_HALF_DAY, pIntent);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, firstMillis, AlarmManager.INTERVAL_HOUR, pIntent);
         }
     }
 
     public static void cancelGreetingAlarm(@NonNull Context context, @NonNull AlarmManager alarmManager) {
         if (alarmManager != null) {
-            Intent intent = new Intent(context.getApplicationContext(), BirthdayAlarmReceiver.class);
+            Intent intent = new Intent(context.getApplicationContext(), GreetingAlarmReceiver.class);
             final PendingIntent pIntent = PendingIntent.getBroadcast(context, GreetingAlarmReceiver.REQUEST_CODE,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.cancel(pIntent);

@@ -14,9 +14,9 @@ public class GlobalConstants {
 
 
     // Birthday constant
-    public static final String APPLICATION_BIRTHDAY_CAN_SEND_BIRTHDAY_MESSAGE = "birthday-can_send_birthday_message";
+    public static final String APPLICATION_BIRTHDAY_CAN_SEND_BIRTHDAY_MESSAGE = "can_send_birthday_message";
     public static final String APPLICATION_BIRTHDAY_NUMBER_OF_DAYS_BEFORE_NOTIFICATION = "birthday_periods";
-    public static final String APPLICATION_BIRTHDAY_NOTIFICATION_STATUS = "birthday_speaker_notification_status";
+    public static final String APPLICATION_BIRTHDAY_NOTIFICATION_STATUS = "notification_status";
 
     //Speaker constant
     public static final String APPLICATION_SPEAKER_IS_ENABLED = "speaker_is_enabled";
@@ -53,6 +53,7 @@ public class GlobalConstants {
     //current phone user constants
     public static final String APPLICATION_PHONE_OWNER_NAME = "owner_name";
     public static final String APPLICATION_PHONE_OWNER_EMAIL = "owner_email";
+    public static final String APPLICATION_PHOTO_URI = "photo_uri";
 
 
     public static final String BIRTHDAY_DATE = "birthday_date";
@@ -70,6 +71,11 @@ public class GlobalConstants {
 
     //contact sync
     public static final String APPLICATION_CONTACT_SYNC_PERIOD = "application_contact_sync_period";
+
+
+    //tacare stuff
+    public static final String TAKECARE_NOTIF_SPEAKER = "notistuff";
+    public static final String TAKECARE_GREETING = "greetingstuff";
 
 
 }

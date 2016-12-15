@@ -52,8 +52,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="Xaviere de BAF"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        style="@style/text_normal_bold" />
 
                     <TextView
                         android:id="@+id/phonenumber"
@@ -63,8 +62,7 @@
                         android:gravity="center"
                         android:layout_gravity="center"
                         android:text="696534361"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        style="@style/text_normal" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="0dp"

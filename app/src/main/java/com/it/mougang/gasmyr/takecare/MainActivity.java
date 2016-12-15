@@ -12,12 +12,14 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,21 +29,24 @@ import android.widget.Toast;
 import com.it.mougang.gasmyr.takecare.Realm.RealmApplicationController;
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
 import com.it.mougang.gasmyr.takecare.domain.SayHello;
+import com.it.mougang.gasmyr.takecare.domain.SmsForLife;
 import com.it.mougang.gasmyr.takecare.utils.AlarmManagerUtils;
 import com.it.mougang.gasmyr.takecare.utils.GlobalConstants;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
+import com.it.mougang.gasmyr.takecare.utils.datepicker.LoveSmsLoader;
+import com.it.mougang.gasmyr.takecare.view.loves.LovesFragment;
 import com.it.mougang.gasmyr.takecare.view.navigationdrawer.NavigationDrawerFragment;
 import com.it.mougang.gasmyr.takecare.view.sayhello.SayHelloFragment;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 12;
-    public static final int MY_PERMISSIONS_REQUEST_SMS = 21;
+    public static final int MY_PERMISSIONS_REQUEST_CODE = 7951;
     private Toolbar toolbar;
     private FragmentPagerItemAdapter pagerItemAdapter;
     private ViewPager mPager;
@@ -50,12 +55,15 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private FloatingActionButton floatingActionButton;
+    private AlarmManager alarm;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.onActivityCreateSetTheme(this,2);
         setContentView(R.layout.activity_main);
+        alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,40 +72,28 @@ public class MainActivity extends AppCompatActivity {
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         floatingActionButton.setVisibility(View.INVISIBLE);
-        //enableRuntimePermission();
         requestAllPermissions();
     }
 
+
     private void requestAllPermissions() {
-        if(!Utils.hasM()){
+        if (!Utils.hasM()) {
             spinner.setVisibility(View.VISIBLE);
             if (sharedPreferences.getBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, true)) {
-                startNotificationAlrm();
-                startGreetingNotificationAlarm();
-                copyBirthdayDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
-                copySayHelloDataToRealm(Utils.getSayHelloList(getApplicationContext()));
-                editor = sharedPreferences.edit();
-                editor.putBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, false);
-                editor.putBoolean(GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, true);
-                editor.putString(GlobalConstants.APPLICATION_INSTALLATION_DATE,Utils.getFormatter().format(new Date()));
-                editor.commit();
+                setupUseffulConfig();
             }
             initComponents();
             spinner.setVisibility(View.GONE);
-        }else{
-            
-
+        } else {
+            spinner.setVisibility(View.VISIBLE);
+            if (Utils.checkAndRequestPermissions(getApplicationContext(), MY_PERMISSIONS_REQUEST_CODE, this)) {
+                setupUseffulConfig();
+            }
+            initComponents();
+            spinner.setVisibility(View.GONE);
         }
     }
 
-    private void startNotificationAlrm() {
-        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        AlarmManagerUtils.scheduleBirthdayAlarm(getApplicationContext(), alarm);
-    }
-    private void startGreetingNotificationAlarm() {
-        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        AlarmManagerUtils.GreetingAlarm(getApplicationContext(), alarm);
-    }
 
     private void initComponents() {
         setupNavigationDrawer();
@@ -107,48 +103,35 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(@NonNull View view) {
-
+                Toast.makeText(MainActivity.this, "Not yet implemented", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void enableRuntimePermission() {
-        if (Utils.hasM() && !Utils.isContactsPermissionIsGranted(getApplicationContext())) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.READ_CONTACTS)) {
-                Toast.makeText(getApplicationContext(), "We need your permissions to access contacts", Toast.LENGTH_LONG).show();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{
-                        Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-            }
-        } else {
-            spinner.setVisibility(View.VISIBLE);
-            if (sharedPreferences.getBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, true)) {
-                startNotificationAlrm();
-                startGreetingNotificationAlarm();
-                copyBirthdayDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
-                copySayHelloDataToRealm(Utils.getSayHelloList(getApplicationContext()));
-                editor = sharedPreferences.edit();
-                editor.putBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, false);
-                editor.putBoolean(GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, true);
-                editor.putString(GlobalConstants.APPLICATION_INSTALLATION_DATE,Utils.getFormatter().format(new Date()));
-                editor.commit();
-            }
-            initComponents();
-            spinner.setVisibility(View.GONE);
-        }
-
+    private void setupUseffulConfig() {
+        copyBirthdayDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
+        copySayHelloDataToRealm(Utils.getSayHelloList(getApplicationContext()));
+        copySayLovesDataToRealm(new LoveSmsLoader().getData());
+        startBirthdayNotificationAlarm();
+        startGreetingNotificationAlarm();
+        editor = sharedPreferences.edit();
+        editor.putBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, false);
+        editor.putBoolean(GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, true);
+        editor.putString(GlobalConstants.APPLICATION_INSTALLATION_DATE, Utils.getFormatter().format(new Date()));
+        editor.commit();
     }
+
 
     private void setupSharepref() {
         sharedPreferences = getSharedPreferences(GlobalConstants.APPLICATION_SHAREPRFERENCE, MODE_PRIVATE);
     }
+
     private void setupApplicationViewPager() {
         pagerItemAdapter = new FragmentPagerItemAdapter(
                 getSupportFragmentManager(), FragmentPagerItems.with(this)
                 .add(R.string.app_tab_title_birtdays, MainActivityFragment.class)
                 .add(R.string.app_tab_title_sayhello, SayHelloFragment.class)
+                .add(R.string.app_tab_title_loves, LovesFragment.class)
                 .create());
         mPager = (ViewPager) findViewById(R.id.myViewPager);
         mPager.setAdapter(pagerItemAdapter);
@@ -175,10 +158,11 @@ public class MainActivity extends AppCompatActivity {
                 Fragment currentFragment = pagerItemAdapter.getItem(position);
                 if (currentFragment instanceof MainActivityFragment) {
                     floatingActionButton.setVisibility(View.INVISIBLE);
-                }
-                else if (currentFragment instanceof SayHelloFragment) {
+                } else if (currentFragment instanceof SayHelloFragment) {
                     floatingActionButton.setVisibility(View.VISIBLE);
                     floatingActionButton.setImageResource(R.drawable.ic_settings_applications_white_24dp);
+                } else if (currentFragment instanceof LovesFragment) {
+                    floatingActionButton.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -189,6 +173,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    spinner.setVisibility(View.VISIBLE);
+                    MyApplication.getInstance().setInfos(Utils.getTelephonyInfos(getApplicationContext()));
+                    if (sharedPreferences.getBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, true)) {
+                        setupUseffulConfig();
+                    }
+                    initComponents();
+                    spinner.setVisibility(View.GONE);
+                } else {
+                    if (!Utils.isContactsPermissionIsGranted(getApplicationContext())) {
+                        Toast.makeText(getApplicationContext(), "We cannot show birthdays.", Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
@@ -208,41 +212,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int RC, String per[], @NonNull int[] PResult) {
-        switch (RC) {
-            case MY_PERMISSIONS_REQUEST_READ_CONTACTS:
-                if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
-                    spinner.setVisibility(View.VISIBLE);
-                    MyApplication.getInstance().setInfos(Utils.getTelephonyInfos(getApplicationContext()));
-                    if (sharedPreferences.getBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, true)) {
-                        startNotificationAlrm();
-                        startGreetingNotificationAlarm();
-                        copyBirthdayDataToRealm(Utils.getBirthdaysFromContact(getApplicationContext()));
-                        copySayHelloDataToRealm(Utils.getSayHelloList(getApplicationContext()));
-                        editor = sharedPreferences.edit();
-                        editor.putBoolean(GlobalConstants.APPLICATION_IS_FISRT_LAUNCH, false);
-                        editor.putBoolean(GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, true);
-                        editor.putString(GlobalConstants.APPLICATION_INSTALLATION_DATE,Utils.getFormatter().format(new Date()));
-                        editor.apply();
-                    }
-                    initComponents();
-                    spinner.setVisibility(View.GONE);
-                } else {
-                    Toast.makeText(getApplicationContext(), "We cannot show birthdays.", Toast.LENGTH_LONG).show();
-                }
-                break;
-            case MY_PERMISSIONS_REQUEST_SMS:
-                if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getApplicationContext(), "Permission Granted.", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Permission Canceled.", Toast.LENGTH_LONG).show();
-                }
-                break;
+        if (id == R.id.action_notificator) {
+            Intent intent = new Intent(getApplicationContext(), TakeCareStuffActivity.class);
+            startActivity(intent);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void copyBirthdayDataToRealm(List<Birthday> birthdays) {
@@ -251,6 +226,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void copySayHelloDataToRealm(List<SayHello> hellos) {
         RealmApplicationController.with(this).copyHellosToRealm(hellos);
+    }
+
+    private void copySayLovesDataToRealm(List<SmsForLife> data) {
+        try {
+            RealmApplicationController.with(this).copyLoveMessageToRealm(data);
+        } catch (Exception e) {
+            Log.e("MainActivity", "error loading loves messages ti database");
+        }
+    }
+
+    private void startBirthdayNotificationAlarm() {
+        AlarmManagerUtils.scheduleBirthdayAlarm(getApplicationContext(), alarm);
+    }
+
+    private void startGreetingNotificationAlarm() {
+        AlarmManagerUtils.GreetingAlarm(getApplicationContext(), alarm);
     }
 
 }

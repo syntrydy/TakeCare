@@ -75,7 +75,7 @@ public class BirthdayAlarmReceiver extends WakefulBroadcastReceiver {
     private void showNotification(Context context, int numberOfBirthdays, Birthday birthday) {
         if (canShowNotification) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-            builder.setSmallIcon(R.drawable.ic_add_alert_black_24dp);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
             builder.setContentTitle(context.getString(R.string.birthday_notification_title));
             builder.setContentText(context.getString(R.string.birthday_notification_textOne) + " " + numberOfBirthdays + " " + context.getString(R.string.birthday_notification_textTwo));
             builder.setSound(Utils.getDefaultNotificationSoundUri());
@@ -88,7 +88,7 @@ public class BirthdayAlarmReceiver extends WakefulBroadcastReceiver {
             intent.putExtra(GlobalConstants.BIRTHDAY_NEXT_DATE, dateFormat.format(birthday.getNextBirthDate()));
             intent.putExtra(GlobalConstants.BIRTHDAY_FULLNAME, birthday.getFullName());
             intent.putExtra(GlobalConstants.BIRTHDAY_NUMBER, birthday.getPhonenumber());
-            intent.putExtra(GlobalConstants.BIRTHDAY_REMAINING_DAYS, birthday.getRemainingsDays());
+            intent.putExtra(GlobalConstants.BIRTHDAY_REMAINING_DAYS, String.valueOf(birthday.getRemainingsDays()));
             intent.putExtra(GlobalConstants.BIRTHDAY_ID, String.valueOf(birthday.getId()));
 
 

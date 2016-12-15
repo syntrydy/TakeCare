@@ -5,6 +5,7 @@
     <string name="app.tab.title.alarms">Alarms</string>
     <string name="app.tab.title.sayhello">Said hello</string>
     <string name="app.tab.title.recordings">Recordings</string>
+    <string name="app.tab.title.loves">Loves</string>
     <string name="app.tab.title.todos">Todos</string>
     <string name="app.menu.search">Search</string>
     <string name="app.menu.about">About</string>
@@ -81,8 +82,8 @@
     <!-- Contacts & Sync -->
     <string name="pref_header_contacts_sync">Contacts &amp; sync</string>
     <string name="pref_title_sync_frequency">Contacts sync frequency</string>
-    <string name="birthday_notifone">Hello Hello do you known that you have birthdays of "</string>
-    <string name="birthday_notiftwo"> of your friends that is comming soon. please dont miss the occasion</string>
+    <string name="birthday_notifone">Hello Hello do you known that you have birthdays of </string>
+    <string name="birthday_notiftwo"> of your friends that is coming soon. please dont miss the occasion</string>
     <string-array name="pref_sync_frequency_titles">
         <item>daily</item>
         <item>weekly</item>
@@ -101,4 +102,7 @@
     <string name="birthday_notification_textOne">Hello Hello do you known that you have birthdays of</string>
     <string name="birthday_notification_textTwo">of your friends that is comming soon. please dont miss the occasion</string>
     <string name="days_text">days</string>
+    <string name="action_notificator">Taking care</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="title_activity_take_care_stuff">Taking care</string>
 </resources>

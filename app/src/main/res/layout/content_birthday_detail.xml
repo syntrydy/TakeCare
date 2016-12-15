@@ -29,23 +29,14 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/birthdate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="17.05.1953"
-                    android:textSize="20dp" />
-
-                <TextView
                     android:id="@+id/nextbirthdate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
                     android:text="17.05.1954"
-                    android:textSize="20dp" />
+                    style="@style/text_normal_bold" />
 
                 <TextView
                     android:id="@+id/remainingday"
@@ -54,7 +45,7 @@
                     android:layout_marginBottom="10dp"
                     android:gravity="center"
                     android:text="25"
-                    android:textSize="20dp" />
+                    style="@style/text_normal_bold"/>
 
                 <TextView
                     android:id="@+id/phonenumber"
@@ -63,7 +54,7 @@
                     android:layout_marginBottom="5dp"
                     android:gravity="center"
                     android:text="+23896532"
-                    android:textSize="20dp" />
+                    style="@style/text_normal_bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -82,7 +73,7 @@
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:gravity="center|bottom"
             android:layout_marginTop="15dp"
             android:layout_gravity="center|bottom"
@@ -93,10 +84,36 @@
                 android:id="@+id/birthday_text_message"
                 android:layout_width="wrap_content"
                 android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_gravity="center"
                 android:text="jdjjdjjdjd"
+                style="@style/text_normal"
                 android:layout_height="wrap_content" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/changeMessageButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="change"
+                    android:layout_marginRight="5dp"
+                    style="@style/button_normal_blue"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/useMessageButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    style="@style/button_normal_blue"
+                    android:text="use it"
+                    android:layout_height="wrap_content" />
 
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

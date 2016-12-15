@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <SwitchPreference
         android:defaultValue="true"
-        android:key="birthday_speaker_notification_status"
+        android:key="notification_status"
         android:summary="@string/pref_enable_birthday_description"
         android:title="@string/pref_enable_birthday_notification" />
     <ListPreference
@@ -14,7 +14,7 @@
         android:title="@string/pref_number_of_before_ntification" />
     <SwitchPreference
         android:defaultValue="true"
-        android:key="birthday-can_send_birthday_message"
+        android:key="can_send_birthday_message"
         android:summary="Auto send birthday message"
         android:title="Send birthday on deadline" />
 </PreferenceScreen>

@@ -23,6 +23,7 @@ public class SmsReceiver extends BroadcastReceiver {
     public static final String ANDROID_PROVIDER_TELEPHONY_SMS_SENT = "android.provider.Telephony.SMS_SENT";
     public static final String FORMAT = "3gpp";
     public static final String PDUS = "pdus";
+    public static final String AUTOCOMPUTE_AT = " @autocompute at";
     private static boolean canSpeakWhenNewIncomingSmsIsDetected = false;
     private static boolean speakJustTheSmsSummary = false;
     private static boolean canReplyToNewSmsWhenPhoneOwnerIsBusy = false;
@@ -81,7 +82,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
     private void handleSmsResponder() {
         if (canReplyToNewSmsWhenPhoneOwnerIsBusy) {
-            SMS_RESPONDER_MESSAGE = "Salut" + SMS_SENDER + " " + SMS_RESPONDER_MESSAGE + " @autocompute " + new Date().getTime();
+            SMS_RESPONDER_MESSAGE = "Salut" + SMS_SENDER_NAME + " " + SMS_RESPONDER_MESSAGE + AUTOCOMPUTE_AT + new Date().getTime();
             Utils.sendNewSms(SMS_RESPONDER_MESSAGE, SMS_SENDER);
         }
     }
@@ -90,10 +91,10 @@ public class SmsReceiver extends BroadcastReceiver {
         if (hasSpeakerFeature && speakerIsOn && canSpeakWhenNewIncomingSmsIsDetected) {
             if (speakJustTheSmsSummary) {
                 FULL_MESSAGE = SMS_SPEAKER_SUMMARY_MESSAGE.replace("{name}", OWNER_NAME);
-                FULL_MESSAGE = FULL_MESSAGE.replace("{sname}", SMS_SENDER);
+                FULL_MESSAGE = FULL_MESSAGE.replace("{sname}", SMS_SENDER_NAME);
             } else {
                 FULL_MESSAGE = SMS_SPEAKER_CONTENT_MESSAGE.replace("{name}", OWNER_NAME);
-                FULL_MESSAGE = FULL_MESSAGE.replace("{sname}", SMS_SENDER);
+                FULL_MESSAGE = FULL_MESSAGE.replace("{sname}", SMS_SENDER_NAME);
                 FULL_MESSAGE = FULL_MESSAGE.replace("{message}", SMS_BODY);
             }
             startSpeakerService(context, FULL_MESSAGE);
@@ -112,14 +113,14 @@ public class SmsReceiver extends BroadcastReceiver {
                 GlobalConstants.APPLICATION_SHAREPRFERENCE, Context.MODE_PRIVATE);
         globalPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         canSpeakWhenNewIncomingSmsIsDetected = globalPreferences.getBoolean(
-                GlobalConstants.APPLICATION_SPEAKER_CAN_SPEAK_WHEN_NEW_INCOMING_SMS_IS_DETECTED, false);
+                GlobalConstants.APPLICATION_SPEAKER_CAN_SPEAK_WHEN_NEW_INCOMING_SMS_IS_DETECTED, true);
         speakJustTheSmsSummary = globalPreferences.getBoolean(
-                GlobalConstants.APPLICATION_SPEAKER_SMS_CAN_READ_JUST_THE_SUMMARY, false);
+                GlobalConstants.APPLICATION_SPEAKER_SMS_CAN_READ_JUST_THE_SUMMARY, true);
         hasSpeakerFeature = sharedPreferences.getBoolean(
-                GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, false);
+                GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, true);
         canReplyToNewSmsWhenPhoneOwnerIsBusy = globalPreferences.
-                getBoolean(GlobalConstants.APPLICATION_SMS_RESPONDER_CAN_REPLY_ON_NEW_SMS, false);
-        speakerIsOn=globalPreferences.getBoolean(GlobalConstants.APPLICATION_SPEAKER_IS_ENABLED,false);
+                getBoolean(GlobalConstants.APPLICATION_SMS_RESPONDER_CAN_REPLY_ON_NEW_SMS, true);
+        speakerIsOn=globalPreferences.getBoolean(GlobalConstants.APPLICATION_SPEAKER_IS_ENABLED,true);
         SMS_RESPONDER_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_SMS_RESPONDER_DEFINED_MESSAGE, "");
         SMS_SPEAKER_CONTENT_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_SPEAKER_SMS_CONTENT_DEFINED_MODEL, "");
         SMS_SPEAKER_SUMMARY_MESSAGE =

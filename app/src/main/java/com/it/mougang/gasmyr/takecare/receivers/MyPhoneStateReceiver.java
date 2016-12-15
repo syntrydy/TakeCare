@@ -100,12 +100,12 @@ public class MyPhoneStateReceiver extends BroadcastReceiver {
         sharedPreferences = context.getSharedPreferences(
                 GlobalConstants.APPLICATION_SHAREPRFERENCE, Context.MODE_PRIVATE);
         canSpeakWhenNewIncomingCallIsDetected = globalPreferences.getBoolean(
-                GlobalConstants.APPLICATION_SPEAKER_CAN_SPEAK_WHEN_NEW_INCOMING_CALL_IS_DETECTED, false);
+                GlobalConstants.APPLICATION_SPEAKER_CAN_SPEAK_WHEN_NEW_INCOMING_CALL_IS_DETECTED, true);
         canUseSpeakerFeature = sharedPreferences.getBoolean(
-                GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, false);
+                GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, true);
         canReplyToNewCallWhenPhoneOwnerIsBusy = globalPreferences.
-                getBoolean(GlobalConstants.APPLICATION_CALL_RESPONDER_CAN_REPLY_ON_NEW_CALL, false);
-        speakerIsOn=globalPreferences.getBoolean(GlobalConstants.APPLICATION_SPEAKER_IS_ENABLED,false);
+                getBoolean(GlobalConstants.APPLICATION_CALL_RESPONDER_CAN_REPLY_ON_NEW_CALL, true);
+        speakerIsOn=globalPreferences.getBoolean(GlobalConstants.APPLICATION_SPEAKER_IS_ENABLED,true);
         RESPONDER_REPLY_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_CALL_RESPONDER_DEFINED_MESSAGE, "");
         SPEAKER_DEFINED_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_SPEAKER_CALL_DEFINED_MODEL, "");
         PHONE_OWNER_NAME = globalPreferences.getString(GlobalConstants.APPLICATION_PHONE_OWNER_NAME, "");

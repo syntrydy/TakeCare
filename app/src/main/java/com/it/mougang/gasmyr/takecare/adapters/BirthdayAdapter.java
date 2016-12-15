@@ -83,10 +83,10 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
         holder.phonenumberTv.setText(birthday.getPhonenumber());
         if (birthday.isrealm()) {
             holder.setBirthdateButton.setText(R.string.edit_birthday_text);
-            holder.setBirthdateButton.setBackgroundResource(R.color.colorAccent2);
+            holder.setBirthdateButton.setBackgroundResource(R.color.colorAccentBlueFlat);
             holder.setBirthdateButton.setEnabled(false);
             holder.checkBox.setChecked(false);
-            holder.birthdayTv.setText(format.format(birthday.getBirthdate()));
+            holder.birthdayTv.setText(format.format(birthday.getNextBirthDate()));
             holder.remainingdaysTv.setText(""+birthday.getRemainingsDays());
         } else {
             holder.checkBox.setEnabled(false);
@@ -120,15 +120,16 @@ public class BirthdayAdapter extends RecyclerView.Adapter<BirthdayAdapter.MyView
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (birthday.isrealm() && isChecked) {
-                    holder.setBirthdateButton.setBackgroundResource(R.color.colorAccent3);
+                    holder.setBirthdateButton.setBackgroundResource(R.color.colorAccentLight);
                     holder.setBirthdateButton.setEnabled(true);
                 } else if (birthday.isrealm() && !isChecked) {
-                    holder.setBirthdateButton.setBackgroundResource(R.color.colorAccent2);
+                    holder.setBirthdateButton.setBackgroundResource(R.color.colorAccentBlueFlat);
                     holder.setBirthdateButton.setEnabled(false);
                     holder.checkBox.setEnabled(true);
                 }
             }
         });
+        Utils.roundedProfileImage(context,holder.photoImageV,Utils.getResourceID("pro"+Utils.getRandom(30),"drawable",context));
     }
 
     @Override

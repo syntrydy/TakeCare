@@ -13,7 +13,7 @@ import com.it.mougang.gasmyr.takecare.utils.Utils;
 import org.joda.time.LocalDateTime;
 
 public class GreetingAlarmReceiver extends WakefulBroadcastReceiver {
-    public static final int REQUEST_CODE = 12568;
+    public static final int REQUEST_CODE = 1357;
     private SharedPreferences sharedPreferences;
     private String phoneOwnerName;
     public GreetingAlarmReceiver() {
@@ -31,8 +31,8 @@ public class GreetingAlarmReceiver extends WakefulBroadcastReceiver {
         int hour = now.getHourOfDay();
         int minute = now.getMinuteOfHour();
         int second = now.getSecondOfMinute();
-        if(hour>=5 && hour<=8){
-            message.append(phoneOwnerName+" Bonjour bien dormir j'espère");
+        if(hour>=6 && hour<=8){
+            message.append("Bonjour "+phoneOwnerName+" bien dormir j'espère");
         }
         else if(hour>=13 && hour <=15){
             message.append(phoneOwnerName+" bon après midi");

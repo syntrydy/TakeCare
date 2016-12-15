@@ -3,6 +3,7 @@ package com.it.mougang.gasmyr.takecare.utils;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +29,8 @@ import android.telephony.TelephonyManager;
 import android.util.Patterns;
 import android.widget.ImageView;
 
+import com.it.mougang.gasmyr.takecare.MainActivity;
+import com.it.mougang.gasmyr.takecare.R;
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
 import com.it.mougang.gasmyr.takecare.domain.SayHello;
 import com.it.mougang.gasmyr.takecare.service.SpeechService;
@@ -104,7 +107,7 @@ public class Utils {
             String fullName = cursor.getString(
                     cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            sayHello = new SayHello(id, fullName, phonenumber, false);
+            sayHello = new SayHello(id, fullName, phonenumber, false,"B");
             sayHellos.add(sayHello);
         }
         cursor.close();
@@ -277,7 +280,7 @@ public class Utils {
 
     public static int getRandom(int n) {
         Random random = new Random();
-        return random.nextInt(n);
+        return random.nextInt(n)+1;
     }
 
     public static void startSpeakerService(@NonNull Context context, String message) {
@@ -286,5 +289,128 @@ public class Utils {
         speakerServiceIntent.putExtra(GlobalConstants.SPEAKER_SERVICE_TARGET, false);
         context.startService(speakerServiceIntent);
     }
+
+    public static boolean checkAndRequestPermissions(Context context, int code, Activity activity) {
+        int internetPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.INTERNET);
+        int readContactPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.READ_CONTACTS);
+        int readSMSPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.READ_SMS);
+        int writeSMSPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.RECEIVE_SMS);
+        int broadcastSMSPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.BROADCAST_SMS);
+        int readPhoneSatePermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.READ_PHONE_STATE);
+        int makeCallPhonePermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.CALL_PHONE);
+        int processOutgoingCallPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.PROCESS_OUTGOING_CALLS);
+        int getAccountsPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.GET_ACCOUNTS);
+        int vibratePermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.VIBRATE);
+        int wakePermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.WAKE_LOCK);
+        int storagePermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        int cameraPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.CAMERA);
+        List<String> permissionsNeed = new ArrayList<>();
+        getNeedPermissions(internetPermission, readContactPermission, readSMSPermission, writeSMSPermission, broadcastSMSPermission, readPhoneSatePermission, makeCallPhonePermission, processOutgoingCallPermission, getAccountsPermission, vibratePermission, wakePermission, storagePermission, cameraPermission, permissionsNeed);
+        if (!permissionsNeed.isEmpty()) {
+            ActivityCompat.requestPermissions(activity,
+                    permissionsNeed.toArray(new String[permissionsNeed.size()]), code);
+            return false;
+        }
+
+        return true;
+    }
+    private static void getNeedPermissions(int internetPermission, int readContactPermission, int readSMSPermission, int writeSMSPermission, int broadcastSMSPermission, int readPhoneSatePermission, int makeCallPhonePermission, int processOutgoingCallPermission, int getAccountsPermission, int vibratePermission, int wakePermission, int storagePermission, int cameraPermission, List<String> permissionsNeed) {
+        if (internetPermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.INTERNET);
+        }
+        if (readContactPermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.READ_CONTACTS);
+        }
+        if (readSMSPermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.READ_SMS);
+        }
+        if (writeSMSPermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.SEND_SMS);
+        }
+        if (broadcastSMSPermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.BROADCAST_SMS);
+        }
+        if (readPhoneSatePermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.READ_PHONE_STATE);
+        }
+        if (makeCallPhonePermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.CALL_PHONE);
+        }
+        if (processOutgoingCallPermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.PROCESS_OUTGOING_CALLS);
+        }
+        if (broadcastSMSPermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.BROADCAST_SMS);
+        }
+        if (getAccountsPermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.GET_ACCOUNTS);
+        }
+        if (vibratePermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.VIBRATE);
+        }
+        if (wakePermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.WAKE_LOCK);
+        }
+        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeed.add(Manifest.permission.CAMERA);
+        }
+    }
+
+    public final static int getResourceID(final String resName, final String resType, final Context ctx)
+    {
+        final int ResourceID = ctx.getResources().getIdentifier(resName, resType,
+                ctx.getApplicationInfo().packageName);
+        if (ResourceID == 0)
+        {
+            throw new IllegalArgumentException("No resource string found with name " + resName);
+        }
+        else
+        {
+            return ResourceID;
+        }
+    }
+
+
+
+
+
+    public final static int THEME_SECOND = 1;
+    public final static int THEME_THIRD = 2;
+
+    public static void changeToTheme(Activity activity, int themeNumber) {
+        activity.finish();
+        activity.startActivity(new Intent(activity, activity.getClass()));
+        activity.overridePendingTransition(android.R.anim.fade_in,
+                android.R.anim.fade_out);
+    }
+
+    public static void onActivityCreateSetTheme(Activity activity, int themeNumber) {
+        switch (themeNumber) {
+            default:
+            case THEME_SECOND:
+                activity.setTheme(R.style.SecondTheme);
+                break;
+            case THEME_THIRD:
+                activity.setTheme(R.style.ThirdTheme);
+                break;
+        }
+    }
+
 
 }

@@ -20,6 +20,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
@@ -28,6 +29,7 @@ import io.realm.RealmResults;
  */
 public class SayHelloFragment extends Fragment {
 
+    private static Realm realm;
     private RecyclerView myRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private RealmResults<SayHello> sayHellos;
@@ -47,13 +49,14 @@ public class SayHelloFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        realm= RealmApplicationController.with(this).getRealm();
         myRecyclerView = (RecyclerView) view.findViewById(R.id.sayhelloRecyclerView);
         myRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         myRecyclerView.setLayoutManager(layoutManager);
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
         sayHellos = RealmApplicationController.with(this).getAllSayHelloAsync();
-        adapter = new SayHelloAdapter(sayHellos, getActivity().getApplicationContext());
+        adapter = new SayHelloAdapter(sayHellos, getActivity().getApplicationContext(),realm);
         sayHellos.addChangeListener(new RealmChangeListener<RealmResults<SayHello>>() {
             @Override
             public void onChange(RealmResults<SayHello> element) {
@@ -61,35 +64,5 @@ public class SayHelloFragment extends Fragment {
             }
         });
         myRecyclerView.setAdapter(adapter);
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSayHelloRowChanged(@NonNull SayHello sayHello) {
-        switch (sayHello.getEventcode()) {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                handleRowChecked(sayHello, sayHello.getStatus());
-                break;
-        }
-    }
-
-    private void handleRowChecked(SayHello sayHello,boolean status) {
-        RealmApplicationController.with(getActivity()).updateSayHello(sayHello, status);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
     }
 }

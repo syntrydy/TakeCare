@@ -13,22 +13,25 @@ public class BirthdayMessageModel extends RealmObject {
     public BirthdayMessageModel() {
     }
 
-    @PrimaryKey
-    private int id;
+    private String key;
     @Required
     private String text;
 
-    public BirthdayMessageModel(int id, String text) {
-        this.id = id;
+    public BirthdayMessageModel(String key, String text) {
+        this.key = key;
         this.text = text;
     }
 
-    public int getId() {
-        return id;
+    public BirthdayMessageModel(String currentBirthdayMessage) {
+        this.text=currentBirthdayMessage;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getText() {

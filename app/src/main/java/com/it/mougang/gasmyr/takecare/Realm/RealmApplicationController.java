@@ -10,11 +10,13 @@ import com.it.mougang.gasmyr.takecare.MyApplication;
 import com.it.mougang.gasmyr.takecare.domain.Birthday;
 import com.it.mougang.gasmyr.takecare.domain.BirthdayMessageModel;
 import com.it.mougang.gasmyr.takecare.domain.SayHello;
+import com.it.mougang.gasmyr.takecare.domain.SmsForLife;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -88,8 +90,18 @@ public class RealmApplicationController {
             realm = Realm.getInstance(MyApplication.getInstance().realmConfiguration);
         }
         RealmResults<SayHello> result = realm.where(SayHello.class).findAllAsync();
-        return result.sort("isSheduled", Sort.ASCENDING);
+        return result;
     }
+
+    @NonNull
+    public RealmResults<SmsForLife> getAllSmsForLifeHelloAsync() {
+        if (realm.isClosed()) {
+            realm = Realm.getInstance(MyApplication.getInstance().realmConfiguration);
+        }
+        RealmResults<SmsForLife> result = realm.where(SmsForLife.class).findAllAsync();
+        return result.sort("text", Sort.DESCENDING);
+    }
+
 
     public void updateBirthday(@NonNull Birthday birthday, Date date) {
         realm.beginTransaction();
@@ -98,17 +110,25 @@ public class RealmApplicationController {
         realm.commitTransaction();
     }
 
-    public void updateSayHello(@NonNull SayHello sayHello, boolean status) {
+    public void updateSayHello(@NonNull SayHello sayHello) {
         realm.beginTransaction();
-        sayHello.setSheduled(status);
+        realm.copyToRealmOrUpdate(sayHello);
         realm.commitTransaction();
     }
 
-    public void updateBirthDay(long birthdayId, BirthdayMessageModel model) {
-        Birthday birthday = realm.where(Birthday.class).equalTo("id", birthdayId).findFirstAsync();
-        realm.beginTransaction();
-        birthday.setMessageModel(model);
-        realm.commitTransaction();
+    public Birthday updateBirthDay(final long birthdayId, final BirthdayMessageModel model) {
+
+        final Birthday birthday1 = realm.where(Birthday.class).equalTo("id", birthdayId).findFirstAsync();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                BirthdayMessageModel newModel = realm.createObject(BirthdayMessageModel.class);
+                newModel.setKey(UUID.randomUUID().toString());
+                newModel.setText(model.getText());
+                birthday1.setMessageModel(newModel);
+            }
+        });
+        return realm.where(Birthday.class).equalTo("id", birthdayId).findFirstAsync();
     }
 
     public void saveBirthdayWithTransaction(@NonNull final List<Birthday> birthdays) {
@@ -138,6 +158,23 @@ public class RealmApplicationController {
         }
     }
 
+    public void copyLoveMessageToRealm(@Nullable List<SmsForLife> smsForLifes) {
+        if (smsForLifes != null && smsForLifes.size() >= 1) {
+            saveLovesMessagesWithTransaction(smsForLifes);
+        }
+    }
+
+    private void saveLovesMessagesWithTransaction(final List<SmsForLife> smsForLifes) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(@NonNull Realm realm) {
+                for (SmsForLife smsForLife : smsForLifes) {
+                    realm.copyToRealmOrUpdate(smsForLife);
+                }
+            }
+        });
+    }
+
     private void saveSayHelloWithTransaction(final List<SayHello> hellos) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -147,5 +184,12 @@ public class RealmApplicationController {
                 }
             }
         });
+    }
+
+    public Birthday getBirthdayById(long birthdayId) {
+        if (realm.isClosed()) {
+            realm = Realm.getInstance(MyApplication.getInstance().realmConfiguration);
+        }
+        return realm.where(Birthday.class).equalTo("id", birthdayId).findFirst();
     }
 }

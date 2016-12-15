@@ -8,6 +8,7 @@ import com.it.mougang.gasmyr.takecare.utils.Utils;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -34,6 +35,8 @@ public class Birthday extends RealmObject {
     private int eventcode;
     boolean isrealm;
     private BirthdayMessageModel messageModel;
+
+
 
 
     public Birthday() {
@@ -104,7 +107,8 @@ public class Birthday extends RealmObject {
     }
 
     public Date getNextBirthDate(){
-        Log.d("BIRTHDAY","Next birthday");
+        Log.d("BIRTHDAY","before "+getBirthdate());
+
         Date date=improveDate();
         Log.d("BIRTHDAY","improve date "+date);
         if(date.before(new Date())){
@@ -112,6 +116,7 @@ public class Birthday extends RealmObject {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
             calendar.add(Calendar.YEAR, 1);
+            Log.d("BIRTHDAY","improve date "+calendar.getTime());
             return calendar.getTime();
         }
         else{

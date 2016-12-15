@@ -100,7 +100,25 @@
         <receiver
             android:name=".receivers.GreetingAlarmReceiver"
             android:enabled="true"
-            android:exported="false"></receiver>
+            android:exported="false" />
+
+        <activity
+            android:name=".TakeCareStuffActivity"
+            android:label="@string/title_activity_take_care_stuff"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.it.mougang.gasmyr.takecare.MainActivity" />
+        </activity>
+        <activity
+            android:name=".imageutils.TempActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Translucent"/>
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

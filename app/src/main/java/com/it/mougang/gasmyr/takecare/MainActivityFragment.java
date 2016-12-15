@@ -92,7 +92,7 @@ public class MainActivityFragment extends Fragment {
         intent.putExtra(GlobalConstants.BIRTHDAY_NEXT_DATE, formatter.format(currentBirthday.getNextBirthDate()));
         intent.putExtra(GlobalConstants.BIRTHDAY_FULLNAME, currentBirthday.getFullName());
         intent.putExtra(GlobalConstants.BIRTHDAY_NUMBER, currentBirthday.getPhonenumber());
-        intent.putExtra(GlobalConstants.BIRTHDAY_REMAINING_DAYS,currentBirthday.getRemainingsDays());
+        intent.putExtra(GlobalConstants.BIRTHDAY_REMAINING_DAYS, String.valueOf(currentBirthday.getRemainingsDays()));
         intent.putExtra(GlobalConstants.BIRTHDAY_ID, String.valueOf(currentBirthday.getId()));
         getActivity().startActivity(intent);
     }

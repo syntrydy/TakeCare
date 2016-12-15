@@ -5,43 +5,54 @@
     android:background="#FFFFFF"
     android:orientation="vertical"
     tools:context="com.it.mougang.gasmyr.takecare.view.navigationdrawer.NavigationDrawerFragment">
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="0dp"
         android:background="@drawable/fond05">
+            <ImageView
+                android:id="@+id/userImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="25dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/gasmyr" />
 
-        <ImageView
-            android:id="@+id/userImage"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:scaleType="centerCrop"
-            android:src="@drawable/gasmyr" />
+            <TextView
+                android:id="@+id/profileName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/userImage"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Thomas Gasmyr Mougang"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/profileName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/userImage"
-            android:gravity="center"
-            android:text="Thomas Gasmyr Mougang"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/profileEmail"
-            style="@style/Widget.AppCompat.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/profileName"
-            android:gravity="center"
-            android:text="gasmyrmougang@yahoo.fr"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="#FFFFFF" />
+            <TextView
+                android:id="@+id/profileEmail"
+                style="@style/Widget.AppCompat.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/profileName"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="gasmyrmougang@yahoo.fr"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="#FFFFFF" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/carocell"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/a7"></LinearLayout>
 </LinearLayout>
 

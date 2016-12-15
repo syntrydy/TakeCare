@@ -21,23 +21,14 @@ public class SayHello extends RealmObject {
     private String fullName;
     @Required
     private String phonenumber;
-    @Ignore
-    private int eventcode;
-    @Ignore
-    private boolean status;
-    private boolean isSheduled;
-
-    public SayHello(long id, String fullName, String phonenumber, boolean isSheduled) {
+    private boolean running;
+    private String sorthelper;
+    public SayHello(long id, String fullName, String phonenumber, boolean running, String sorthelper) {
         this.id = id;
         this.fullName = fullName;
         this.phonenumber = phonenumber;
-        this.isSheduled = isSheduled;
-    }
-
-    public SayHello(String fullName, String phonenumber, boolean isSheduled) {
-        this.fullName = fullName;
-        this.phonenumber = phonenumber;
-        this.isSheduled = isSheduled;
+        this.running = running;
+        this.sorthelper = sorthelper;
     }
 
     public String getFullName() {
@@ -56,14 +47,6 @@ public class SayHello extends RealmObject {
         this.phonenumber = phonenumber;
     }
 
-    public int getEventcode() {
-        return eventcode;
-    }
-
-    public void setEventcode(int eventcode) {
-        this.eventcode = eventcode;
-    }
-
     public long getId() {
         return id;
     }
@@ -72,19 +55,19 @@ public class SayHello extends RealmObject {
         this.id = id;
     }
 
-    public boolean isSheduled() {
-        return isSheduled;
+    public boolean isRunning() {
+        return running;
     }
 
-    public void setSheduled(boolean sheduled) {
-        isSheduled = sheduled;
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
-    public boolean getStatus() {
-        return status;
+    public String getSorthelper() {
+        return sorthelper;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setSorthelper(String sorthelper) {
+        this.sorthelper = sorthelper;
     }
 }

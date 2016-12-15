@@ -6,4 +6,20 @@
     <color name="colorAccent2">#c4d6f7</color>
     <color name="colorAccent3">#033a74</color>
     <color name="colorWhite">#FFFFFF</color>
+
+
+    <color name="colorPrimaryBlue">#2196F3</color>
+    <color name="colorPrimaryDarkBlue">#0D47A1</color>
+    <color name="colorAccentBlue">#827717</color>
+
+    <color name="colorPrimaryGrey">#607D8B</color>
+    <color name="colorPrimaryDarkGrey">#78aec9</color>
+    <color name="colorAccentGrey">#263238</color>
+
+    <color name="colorPrimaryLight">#03A9F4</color>
+    <color name="colorPrimaryDarkLight">#0288D1</color>
+    <color name="colorAccentLight">#81D4FA</color>
+    <color name="colorAccentBlueFlat">#d8ecf5</color>
+
+
 </resources>

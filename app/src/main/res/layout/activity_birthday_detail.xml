@@ -22,7 +22,7 @@
             <ImageView
                 android:id="@+id/photo"
                 android:layout_marginTop="16dp"
-                android:layout_marginLeft="16dp"
+                android:layout_marginLeft="36dp"
                 android:layout_width="50dp"
                 android:src="@drawable/profile05"
                 android:layout_height="50dp"/>
@@ -30,10 +30,9 @@
                  android:id="@+id/fullName"
                  android:layout_width="match_parent"
                  android:gravity="center"
-                 android:textColor="#FFFFFF"
+                 style="@style/text_large_bold_white"
                  android:layout_marginLeft="6dp"
                  android:layout_marginStart="6dp"
-                 android:textSize="30sp"
                  android:text="Jeremy le Roi"
                  android:layout_height="match_parent" />
             <TextView
@@ -41,8 +40,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
                 android:gravity="top|end"
-                android:textColor="#ffffff"
-                android:textSize="30sp"
+                style="@style/text_normal_white"
                 android:text="35 days"
                 android:layout_height="match_parent" />
             <android.support.v7.widget.Toolbar

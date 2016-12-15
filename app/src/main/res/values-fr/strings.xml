@@ -99,4 +99,5 @@
     <string name="birthday_notification_textOne">Salut salut l\'anniversaire de </string>
     <string name="birthday_notification_textTwo">de vos connaissances est proche.</string>
     <string name="days_text">days</string>
+    <string name="action_notificator">Take care</string>
 </resources>

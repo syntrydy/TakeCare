@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="birthday_notifone">"Hi Hi Hi there are "</string>
-    <string name="birthday_notiftwo" />
+    <string name="birthday_notifone">Hello Hello do you known that you have birthdays of</string>
+    <string name="birthday_notiftwo">of your friends that is comming soon. please dont miss the occasion</string>
     <string name="edit_birthday_text">edit birthday</string>
     <string name="birthday_notification_title">Look at your firends birthdays</string>
     <string name="birthday_notification_textOne">Hello Hello do you known that you have birthdays of </string>
     <string name="birthday_notification_textTwo">of your friends that is comming soon. please dont miss the occasion</string>
     <string name="days_text">days</string>
+    <string name="action_notificator">Take care</string>
 </resources>

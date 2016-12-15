@@ -29,14 +29,19 @@ public class SpeechService extends Service implements TextToSpeech.OnInitListene
 
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
-        handler.removeCallbacksAndMessages(null);
-        Bundle data = intent.getExtras();
-        message = data.getString(GlobalConstants.SPEAKER_SERVICE_MESSAGE, message);
-        isCallMessage = data.getBoolean(GlobalConstants.SPEAKER_SERVICE_TARGET, false);
-        if (isInit) {
-            speak(isCallMessage);
-        }
-        waitAwhile();
+       try{
+           handler.removeCallbacksAndMessages(null);
+           Bundle data = intent.getExtras();
+           message = data.getString(GlobalConstants.SPEAKER_SERVICE_MESSAGE, message);
+           isCallMessage = data.getBoolean(GlobalConstants.SPEAKER_SERVICE_TARGET, false);
+           if (isInit) {
+               speak(isCallMessage);
+           }
+           waitAwhile();
+
+       }catch (Exception e){
+           return SpeechService.START_NOT_STICKY;
+       }
         return SpeechService.START_NOT_STICKY;
     }
 

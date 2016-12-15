@@ -13,26 +13,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.it.mougang.gasmyr.takecare.R;
+import com.it.mougang.gasmyr.takecare.Realm.RealmApplicationController;
+import com.it.mougang.gasmyr.takecare.domain.Birthday;
 import com.it.mougang.gasmyr.takecare.domain.SayHello;
 import com.it.mougang.gasmyr.takecare.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 /**
  * Created by gamyr on 10/28/16.
  */
 
-public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyViewHolder> {
+public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyViewHolder> implements RealmChangeListener<RealmResults<SayHello>> {
 
     private RealmResults<SayHello> realmResults;
     private Context context;
-    private final EventBus eventBus = EventBus.getDefault();
+    private Realm realm;
 
-    public SayHelloAdapter(RealmResults<SayHello> hellos, Context context) {
+    public SayHelloAdapter(RealmResults<SayHello> hellos, Context context, Realm realm) {
         this.realmResults = hellos;
         this.context = context;
+        this.realmResults.addChangeListener(this);
+        this.realm=realm;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -66,32 +72,32 @@ public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyView
         holder.fullnameTv.setText(sayHello.getFullName());
         Utils.roundedProfileImage(context, holder.photoImageV, R.drawable.profile00);
         holder.phonenumberTv.setText(sayHello.getPhonenumber());
-        holder.checkBox.setChecked(sayHello.isSheduled());
+        holder.checkBox.setChecked(sayHello.isRunning());
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    sayHello.setStatus(true);
+                    realm.beginTransaction();
+                    sayHello.setRunning(true);
+                    sayHello.setSorthelper("A");
+                    realm.commitTransaction();
                 } else {
-                    sayHello.setStatus(false);
+                    realm.beginTransaction();
+                    sayHello.setRunning(false);
+                    sayHello.setSorthelper("B");
+                    realm.commitTransaction();
                 }
-                sayHello.setEventcode(3);
-                eventBus.post(sayHello);
             }
         });
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //sayHello.setEventcode(1);
-                //eventBus.post(sayHello);
             }
         });
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                //sayHello.setEventcode(2);
-                //eventBus.post(sayHello);
                 return true;
             }
         });
@@ -100,5 +106,9 @@ public class SayHelloAdapter extends RecyclerView.Adapter<SayHelloAdapter.MyView
     @Override
     public int getItemCount() {
         return realmResults.size();
+    }
+    @Override
+    public void onChange(RealmResults<SayHello> element) {
+        notifyDataSetChanged();
     }
 }

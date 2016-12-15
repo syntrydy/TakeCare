@@ -22,7 +22,7 @@
         android:title="@string/settings_sms_summary_model_title" />
     <EditTextPreference
         android:key="speaker-sms_content_defined_model"
-        android:dependency="speaker-sms_can_read_just_sms_summary"
+        android:dependency="speaker_can_speak_when_new_sms"
         android:capitalize="words"
         android:defaultValue="@string/settings_sms_body_default_model"
         android:inputType="textCapWords"
