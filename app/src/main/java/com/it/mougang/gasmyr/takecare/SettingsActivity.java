@@ -160,6 +160,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_SPEAKER_SMS_SUMMARY_DEFINED_MODEL));
             bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_SPEAKER_SMS_CONTENT_DEFINED_MODEL));
             bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_SMS_RESPONDER_DEFINED_MESSAGE));
+            bindPreferenceSummaryToValue(findPreference(GlobalConstants.APPLICATION_SMS_REPLY_SIM));
         }
 
         @Override

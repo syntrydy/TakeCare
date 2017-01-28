@@ -47,4 +47,13 @@
         android:selectAllOnFocus="true"
         android:singleLine="false"
         android:title="@string/settings_sms_responder_title" />
+    <ListPreference
+        android:defaultValue="1"
+        android:dependency="smsresponder_can_reply_on_new_sms"
+        android:entries="@array/pref_operator_values_label"
+        android:entryValues="@array/pref_operator_values"
+        android:key="sms_reply_sim"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_first_sim_operator" />
 </PreferenceScreen>

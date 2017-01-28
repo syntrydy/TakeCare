@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_operator_values_label">
+        <item>MTN</item>
+        <item>Orange</item>
+        <item>Nexttel</item>
+        <item>Camtel</item>
+    </string-array>
+    <string-array name="pref_operator_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="pref_birthday_notification_values_label">
+        <item>1 day</item>
+        <item>2 days</item>
+        <item>3 days</item>
+        <item>4 days</item>
+        <item>5 days</item>
+        <item>6 days</item>
+        <item>1 week</item>
+        <item>2 weeks</item>
+    </string-array>
+    <string-array name="pref_birthday_notification_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>14</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_titles">
+        <item>daily</item>
+        <item>weekly</item>
+        <item>monthly</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>1</item>
+        <item>7</item>
+        <item>30</item>
+        <item>-1</item>
+    </string-array>
+</resources>

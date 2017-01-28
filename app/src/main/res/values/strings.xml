@@ -40,8 +40,8 @@
 
     <string name="settings_sms_enable_responder">respond incoming sms</string>
     <string name="settings_sms_enable_responder_title">reply sms</string>
-    <string name="settings_sms_responder">message to respond with</string>
-    <string name="settings_sms_responder_title">message to respond with</string>
+    <string name="settings_sms_responder">{name} is busy!</string>
+    <string name="settings_sms_responder_title">reply message</string>
 
     <!-- Settings for Call -->
     <string name="pref_header_call">CALL</string>
@@ -53,49 +53,17 @@
     <string name="app_first_start_message">" Welcome, I am here to be your new assistant."</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Birthday settingsl -->
+    <!-- Birthday settings -->
     <string name="pref_enable_birthday_notification">Enable birthday notification</string>
     <string name="pref_enable_birthday_description">You will receive notification on coming soon birthdays
     </string>
     <string name="pref_number_of_before_ntification">Number of days before notification</string>
-    <string-array name="pref_birthday_notification_values_label">
-        <item>1 day</item>
-        <item>2 days</item>
-        <item>3 days</item>
-        <item>4 days</item>
-        <item>5 days</item>
-        <item>6 days</item>
-        <item>1 week</item>
-        <item>2 weeks</item>
-    </string-array>
-    <string-array name="pref_birthday_notification_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>14</item>
-    </string-array>
 
     <!-- Contacts & Sync -->
     <string name="pref_header_contacts_sync">Contacts &amp; sync</string>
     <string name="pref_title_sync_frequency">Contacts sync frequency</string>
     <string name="birthday_notifone">Hello Hello do you known that you have birthdays of </string>
     <string name="birthday_notiftwo"> of your friends that is coming soon. please dont miss the occasion</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>daily</item>
-        <item>weekly</item>
-        <item>monthly</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>1</item>
-        <item>7</item>
-        <item>30</item>
-        <item>-1</item>
-    </string-array>
     <string name="title_activity_birthday_detail"></string>
     <string name="edit_birthday_text">edit birthday</string>
     <string name="birthday_notification_title">Look at your firends birthdays</string>
@@ -105,4 +73,8 @@
     <string name="action_notificator">Taking care</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="title_activity_take_care_stuff">Taking care</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pref_first_sim_operator">just numbers from</string>
 </resources>

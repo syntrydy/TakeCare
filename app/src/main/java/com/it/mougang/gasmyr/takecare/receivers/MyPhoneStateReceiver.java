@@ -17,6 +17,8 @@ import com.it.mougang.gasmyr.takecare.utils.Utils;
 public class MyPhoneStateReceiver extends BroadcastReceiver {
 
     private static final String TAG = "MyPhoneStateReceiver";
+    public static final String RNAME = "{name}";
+    public static final String RSENDER_NAME = "{sname}";
     private static Context context;
     private static SharedPreferences sharedPreferences;
     private static SharedPreferences globalPreferences;
@@ -39,6 +41,7 @@ public class MyPhoneStateReceiver extends BroadcastReceiver {
     @Nullable
     private String PHONE_OWNER_NAME;
     private String FULL_MESSAGE;
+    private int simToUse = 0;
 
     public MyPhoneStateReceiver() {
     }
@@ -48,19 +51,20 @@ public class MyPhoneStateReceiver extends BroadcastReceiver {
         try {
             MyPhoneStateReceiver.context = context;
             init();
-            makeLog("1" + canUseSpeakerFeature + canSpeakWhenNewIncomingCallIsDetected);
+            Utils.makeLog("begin " + canUseSpeakerFeature + canSpeakWhenNewIncomingCallIsDetected);
             String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
             CALL_MAKER_NUMBER = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
             CALL_MAKER_NUMBER_NAME = Utils.getContactName(context, CALL_MAKER_NUMBER);
-            makeLog("2");
             if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 phoneHasAlreadyRing = true;
+                Utils.makeLog("is ringing" +SPEAKER_DEFINED_MESSAGE);
                 if (canUseSpeakerFeature && speakerIsOn && canSpeakWhenNewIncomingCallIsDetected) {
-                    FULL_MESSAGE = SPEAKER_DEFINED_MESSAGE.replace("{name}", PHONE_OWNER_NAME);
-                    FULL_MESSAGE = FULL_MESSAGE.replace("{sname}", CALL_MAKER_NUMBER_NAME);
+                    FULL_MESSAGE = SPEAKER_DEFINED_MESSAGE.replace(RNAME, PHONE_OWNER_NAME);
+                    FULL_MESSAGE = FULL_MESSAGE.replace(RSENDER_NAME, CALL_MAKER_NUMBER_NAME);
                     startSpeakerService(context, FULL_MESSAGE);
                 }
-                if (canReplyToNewCallWhenPhoneOwnerIsBusy) {
+                if (canReplyToNewCallWhenPhoneOwnerIsBusy && canSend(CALL_MAKER_NUMBER)) {
+                    RESPONDER_REPLY_MESSAGE=RESPONDER_REPLY_MESSAGE.replace(RNAME,PHONE_OWNER_NAME);
                     Utils.sendNewSms(RESPONDER_REPLY_MESSAGE, CALL_MAKER_NUMBER);
                 }
             }
@@ -76,15 +80,22 @@ public class MyPhoneStateReceiver extends BroadcastReceiver {
             }
 
         } catch (Exception e) {
-            makeLog(e.getStackTrace().toString());
+            Utils.makeLog(e.getStackTrace().toString());
 
         }
     }
 
-    private void makeLog(String msg) {
-        Log.i(TAG, msg);
+    private boolean canSend(String sms_sender) {
+        if (simToUse == 1 && Utils.isMtn(sms_sender)) {
+            return true;
+        } else if (simToUse == 2 && Utils.isOrange(sms_sender)) {
+            return true;
+        } else if (simToUse == 3 && Utils.isNexttel(sms_sender)) {
+            return true;
+        } else {
+            return false;
+        }
     }
-
 
     private void startSpeakerService(@NonNull Context context, String message) {
         synchronized (new Object()) {
@@ -106,9 +117,11 @@ public class MyPhoneStateReceiver extends BroadcastReceiver {
         canReplyToNewCallWhenPhoneOwnerIsBusy = globalPreferences.
                 getBoolean(GlobalConstants.APPLICATION_CALL_RESPONDER_CAN_REPLY_ON_NEW_CALL, true);
         speakerIsOn=globalPreferences.getBoolean(GlobalConstants.APPLICATION_SPEAKER_IS_ENABLED,true);
-        RESPONDER_REPLY_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_CALL_RESPONDER_DEFINED_MESSAGE, "");
-        SPEAKER_DEFINED_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_SPEAKER_CALL_DEFINED_MODEL, "");
+        RESPONDER_REPLY_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_SMS_RESPONDER_DEFINED_MESSAGE, "");
+        SPEAKER_DEFINED_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_SPEAKER_CALL_DEFINED_MODEL, " New CALL");
         PHONE_OWNER_NAME = globalPreferences.getString(GlobalConstants.APPLICATION_PHONE_OWNER_NAME, "");
+        simToUse = Integer.valueOf(sharedPreferences.getString(GlobalConstants.APPLICATION_SMS_REPLY_SIM, "1"));
+        Utils.makeLog("==============>>"+simToUse);
     }
 }
 

@@ -26,6 +26,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.ImageView;
 
@@ -36,6 +37,7 @@ import com.it.mougang.gasmyr.takecare.domain.SayHello;
 import com.it.mougang.gasmyr.takecare.service.SpeechService;
 
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -85,6 +87,11 @@ public class Utils {
     @NonNull
     public static SimpleDateFormat getDateFormatter() {
         return new SimpleDateFormat("dd.MM.yyyy");
+    }
+
+    @NonNull
+    public static SimpleDateFormat getTimeFormatter() {
+        return new SimpleDateFormat("hh:mm:ss");
     }
 
     public static Date getDefaultDate() {
@@ -201,6 +208,34 @@ public class Utils {
         }
         return contactName;
     }
+
+    public static String getMtnNumber(@NonNull Context context, String phoneNumber) {
+        String result="";
+        ContentResolver cr = context.getContentResolver();
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.NUMBER}, null, null, null);
+        if (cursor == null) {
+            result=phoneNumber;
+        }
+        String value="";
+        if (cursor.moveToFirst()) {
+            do{
+                value = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.NUMBER));
+                if(Utils.isMtn(value)){
+                    result=value;
+                    break;
+                }
+
+            }while (cursor.moveToNext());
+        }
+
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        return result;
+    }
+
 
     @NonNull
     public static HashMap<String, String> getTelephonyInfos(@NonNull Context context) {
@@ -412,5 +447,35 @@ public class Utils {
         }
     }
 
+    public static boolean isMtn(String number){
+        return  (number.startsWith("67") || number.startsWith("654"));
+    }
 
+    public static boolean isOrange(String number){
+        return  (number.startsWith("69") || number.startsWith("656"));
+    }
+    public static boolean isNexttel(String number){
+        return  (number.startsWith("66"));
+    }
+
+    public static String getGrretingPreffix(){
+        LocalDateTime now = LocalDateTime.now();
+        int hour = now.getHourOfDay();
+        if(hour>=6 && hour<=8){
+           return "BONJOUR";
+        }
+        else if(hour>=13 && hour <=15){
+           return "BAN APRES MIDI";
+        }
+        else if(hour>=18 && hour<=22) {
+           return "BONSOIR";
+        }
+        else{
+            return "SALUT";
+        }
+    }
+
+    public static void makeLog(String msg) {
+        Log.i("TAKECARE", msg);
+    }
 }

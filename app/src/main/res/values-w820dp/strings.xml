@@ -6,6 +6,10 @@
     <string name="birthday_notification_title">Look at your firends birthdays</string>
     <string name="birthday_notification_textOne">Hello Hello do you known that you have birthdays of </string>
     <string name="birthday_notification_textTwo">of your friends that is comming soon. please dont miss the occasion</string>
+    <string name="settings_call_summary_default_model">{name} you have a new call from {sname}</string>
     <string name="days_text">days</string>
+    <string name="settings_sms_responder">{name} is busy!</string>
+    <string name="settings_sms_responder_title">reply message</string>
     <string name="action_notificator">Take care</string>
+    <string name="pref_first_sim_operator">just numbers from</string>
 </resources>

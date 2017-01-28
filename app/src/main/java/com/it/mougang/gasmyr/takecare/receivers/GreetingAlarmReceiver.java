@@ -29,8 +29,6 @@ public class GreetingAlarmReceiver extends WakefulBroadcastReceiver {
         StringBuilder message=new StringBuilder();
         LocalDateTime now = LocalDateTime.now();
         int hour = now.getHourOfDay();
-        int minute = now.getMinuteOfHour();
-        int second = now.getSecondOfMinute();
         if(hour>=6 && hour<=8){
             message.append("Bonjour "+phoneOwnerName+" bien dormir j'espère");
         }

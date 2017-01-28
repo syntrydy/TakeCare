@@ -62,7 +62,8 @@ public class GlobalConstants {
     public static final String BIRTHDAY_NUMBER = "birthday_number";
     public static final String BIRTHDAY_REMAINING_DAYS = "birthday_remainingdays";
     public static final String BIRTHDAY_ID = "birthday_id";
-    public static final String BIRTHDAY_MESSAGE_MODEL = "birthdaymessage_model";
+
+    public static final String APPLICATION_SMS_REPLY_SIM = "sms_reply_sim";
 
 
     //speaker service extra

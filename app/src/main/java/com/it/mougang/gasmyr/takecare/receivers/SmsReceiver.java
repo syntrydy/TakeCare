@@ -23,7 +23,10 @@ public class SmsReceiver extends BroadcastReceiver {
     public static final String ANDROID_PROVIDER_TELEPHONY_SMS_SENT = "android.provider.Telephony.SMS_SENT";
     public static final String FORMAT = "3gpp";
     public static final String PDUS = "pdus";
-    public static final String AUTOCOMPUTE_AT = " @autocompute at";
+    public static final String AUTOCOMPUTE_AT = " . >>>>>> @generated at ";
+    public static final String RNAME = "{name}";
+    public static final String RSENDER_NAME = "{sname}";
+    public static final String RMESSAGE = "{message}";
     private static boolean canSpeakWhenNewIncomingSmsIsDetected = false;
     private static boolean speakJustTheSmsSummary = false;
     private static boolean canReplyToNewSmsWhenPhoneOwnerIsBusy = false;
@@ -44,6 +47,7 @@ public class SmsReceiver extends BroadcastReceiver {
     private String OWNER_NAME;
     private String FULL_MESSAGE;
     private String SMS_RESPONDER_MESSAGE;
+    private int simToUse = 0;
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
@@ -61,8 +65,9 @@ public class SmsReceiver extends BroadcastReceiver {
                         messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                     }
                     SMS_BODY += messages[i].getMessageBody();
-                    SMS_SENDER += messages[i].getOriginatingAddress();
+                    SMS_SENDER = messages[i].getOriginatingAddress();
                     SMS_SENDER_NAME = Utils.getContactName(context, SMS_SENDER);
+                    Utils.makeLog(SMS_SENDER_NAME);
                 }
                 if (intent.getAction().equals(ANDROID_PROVIDER_TELEPHONY_SMS_RECEIVED)) {
                     if (SMS_BODY.length() >= 2) {
@@ -76,26 +81,39 @@ public class SmsReceiver extends BroadcastReceiver {
 
             }
         } catch (Exception e) {
-            Log.e("GASMYR", e.getMessage());
+            Utils.makeLog(e.getMessage());
         }
     }
 
     private void handleSmsResponder() {
-        if (canReplyToNewSmsWhenPhoneOwnerIsBusy) {
-            SMS_RESPONDER_MESSAGE = "Salut" + SMS_SENDER_NAME + " " + SMS_RESPONDER_MESSAGE + AUTOCOMPUTE_AT + new Date().getTime();
+        if (canReplyToNewSmsWhenPhoneOwnerIsBusy && canSend(SMS_SENDER)) {
+            SMS_RESPONDER_MESSAGE = Utils.getGrretingPreffix() + SMS_SENDER_NAME + " JE SUIS LE TELEPHONE DE " + OWNER_NAME + " IL NE PEUT VOUS REPONDRE. IL A LAISSER CE MESSAGE COMME MOTIF:" + SMS_RESPONDER_MESSAGE + AUTOCOMPUTE_AT + Utils.getTimeFormatter().format(new Date());
+            SMS_RESPONDER_MESSAGE = SMS_RESPONDER_MESSAGE.replace(RNAME, OWNER_NAME);
             Utils.sendNewSms(SMS_RESPONDER_MESSAGE, SMS_SENDER);
+        }
+    }
+
+    private boolean canSend(String sms_sender) {
+        if (simToUse == 1 && Utils.isMtn(sms_sender)) {
+            return true;
+        } else if (simToUse == 2 && Utils.isOrange(sms_sender)) {
+            return true;
+        } else if (simToUse == 3 && Utils.isNexttel(sms_sender)) {
+            return true;
+        } else {
+            return false;
         }
     }
 
     private void triggeSmsSpeaker(@NonNull Context context) {
         if (hasSpeakerFeature && speakerIsOn && canSpeakWhenNewIncomingSmsIsDetected) {
             if (speakJustTheSmsSummary) {
-                FULL_MESSAGE = SMS_SPEAKER_SUMMARY_MESSAGE.replace("{name}", OWNER_NAME);
-                FULL_MESSAGE = FULL_MESSAGE.replace("{sname}", SMS_SENDER_NAME);
+                FULL_MESSAGE = SMS_SPEAKER_SUMMARY_MESSAGE.replace(RNAME, OWNER_NAME);
+                FULL_MESSAGE = FULL_MESSAGE.replace(RSENDER_NAME, SMS_SENDER_NAME);
             } else {
-                FULL_MESSAGE = SMS_SPEAKER_CONTENT_MESSAGE.replace("{name}", OWNER_NAME);
-                FULL_MESSAGE = FULL_MESSAGE.replace("{sname}", SMS_SENDER_NAME);
-                FULL_MESSAGE = FULL_MESSAGE.replace("{message}", SMS_BODY);
+                FULL_MESSAGE = SMS_SPEAKER_CONTENT_MESSAGE.replace(RNAME, OWNER_NAME);
+                FULL_MESSAGE = FULL_MESSAGE.replace(RSENDER_NAME, SMS_SENDER_NAME);
+                FULL_MESSAGE = FULL_MESSAGE.replace(RMESSAGE, SMS_BODY);
             }
             startSpeakerService(context, FULL_MESSAGE);
         }
@@ -120,12 +138,13 @@ public class SmsReceiver extends BroadcastReceiver {
                 GlobalConstants.APPLICATION_HAS_SPEAKER_FEATURE, true);
         canReplyToNewSmsWhenPhoneOwnerIsBusy = globalPreferences.
                 getBoolean(GlobalConstants.APPLICATION_SMS_RESPONDER_CAN_REPLY_ON_NEW_SMS, true);
-        speakerIsOn=globalPreferences.getBoolean(GlobalConstants.APPLICATION_SPEAKER_IS_ENABLED,true);
+        speakerIsOn = globalPreferences.getBoolean(GlobalConstants.APPLICATION_SPEAKER_IS_ENABLED, true);
         SMS_RESPONDER_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_SMS_RESPONDER_DEFINED_MESSAGE, "");
         SMS_SPEAKER_CONTENT_MESSAGE = globalPreferences.getString(GlobalConstants.APPLICATION_SPEAKER_SMS_CONTENT_DEFINED_MODEL, "");
         SMS_SPEAKER_SUMMARY_MESSAGE =
                 globalPreferences.getString(GlobalConstants.APPLICATION_SPEAKER_SMS_SUMMARY_DEFINED_MODEL, "");
         OWNER_NAME = globalPreferences.getString(GlobalConstants.APPLICATION_PHONE_OWNER_NAME, "");
+        simToUse = Integer.valueOf(sharedPreferences.getString(GlobalConstants.APPLICATION_SMS_REPLY_SIM, "1"));
     }
 
 

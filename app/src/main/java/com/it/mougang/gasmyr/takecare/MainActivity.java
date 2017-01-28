@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         pagerItemAdapter = new FragmentPagerItemAdapter(
                 getSupportFragmentManager(), FragmentPagerItems.with(this)
                 .add(R.string.app_tab_title_birtdays, MainActivityFragment.class)
-                .add(R.string.app_tab_title_sayhello, SayHelloFragment.class)
+                //.add(R.string.app_tab_title_sayhello, SayHelloFragment.class)
                 .add(R.string.app_tab_title_loves, LovesFragment.class)
                 .create());
         mPager = (ViewPager) findViewById(R.id.myViewPager);
@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             RealmApplicationController.with(this).copyLoveMessageToRealm(data);
         } catch (Exception e) {
-            Log.e("MainActivity", "error loading loves messages ti database");
+            Utils.makeLog("error loading loves messages inside database");
         }
     }
 
